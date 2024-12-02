@@ -1,0 +1,32 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "sans titre.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "dammier.tsx": {
+            "scaleInDock": 1
+        },
+        "sans titre.tmx": {
+            "scale": 0.25,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 2100,
+                "y": 372
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/theop/OneDrive/informatique/toute_ma_programation/mes_programe/python/jeu dammier arthur/assets/map",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "sans titre.tmx"
+    ],
+    "project": "sans titre.tiled-project",
+    "recentFiles": [
+        "sans titre.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
