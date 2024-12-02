@@ -17,4 +17,4 @@ for %%I in (%REQUIRED_LIBRARIES%) do (
         echo %%I est déjà installé.
     )
 )
-python ./src/main.py %*
+python ./src %*
