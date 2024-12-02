@@ -38,7 +38,7 @@ def menu(screen, font)-> dict:
 def start_nombre_mystere():
     dammier()
 
-def main()-> None:
+def Main()-> None:
     pygame.init()
     font = pygame.font.Font(None, 80)
     screen = pygame.display.set_mode((700,700))
@@ -70,7 +70,4 @@ def main()-> None:
         clock.tick(60)
 
     pygame.quit()
-    
-if __name__=="__main__":
-    main()
     
