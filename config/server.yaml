@@ -1,0 +1,8 @@
+all:
+  sa: "sa"
+
+dev:
+  test: "test"
+  
+prod:
+  test: "test"

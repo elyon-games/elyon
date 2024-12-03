@@ -1,18 +1,35 @@
 import sys
+import common.config
+import common.utils
+
+global options
+options = common.utils.get_format_args()
+
+global mode
+if options.get("config"):
+    mode = options["config"]
+else:
+    mode = "dev" if common.utils.getDevModeStatus() else "prod"
+
+print("Starting Elyon...")
+if common.utils.getDevModeStatus():
+    print(f"Options : {options}")
+    print(f"Mode : {mode}")
+
 
 def start_server() -> None:
     import server.main
-    server.main.Main()
+    config_server = common.config.getConfig("server", mode)
+    server.main.Main(config=config_server, options=options)
 
 def start_client() -> None:
     import client.main
-    client.main.Main()
+    config_client = common.config.getConfig("client", mode)
+    client.main.Main(config=config_client, options=options)
 
 def start_local() -> None:
-    import server.main
-    import client.main
-    server.main.Main()
-    client.main.Main()
+    start_server()
+    start_client()
 
 def Main() -> None:
     try:
