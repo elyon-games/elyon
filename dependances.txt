@@ -1,3 +1,5 @@
 pygame;
 requests;
 pyinstaller;
+flask;
+yaml;
