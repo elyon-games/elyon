@@ -4,7 +4,7 @@ Démarrer l'application en vérifiant les dépendance enregistrer dans le fichie
 - ./dev.bat
 Démarrer tout simplement l'application.
 
-Si vous vous avoir la commande complet pour installer les dépendances vous pouvez effecter ./start.bat --dependances-list
+Si vous vous avoir la commande complet pour installer les dépendances vous pouvez effecter ./start.bat --dependances-cmd
 ### **Arguments** :
 Tout les arguments sauf une exceptions sont de se format ci-contre : '--{clé} {valeur}'
 Listes des arguments existant :
