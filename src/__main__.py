@@ -9,7 +9,7 @@ global mode
 if options.get("config"):
     mode = options["config"]
 else:
-    mode = "dev" if common.utils.getDevModeStatus() else "prod"
+    mode = common.utils.getMode()
 
 print("Starting Elyon...")
 if common.utils.getDevModeStatus():
@@ -33,22 +33,22 @@ def start_local() -> None:
 
 def Main() -> None:
     try:
-        if "--mode" in sys.argv:
-            mode = sys.argv[sys.argv.index("--mode") + 1]
-            if mode == "server":
+        if options.get("type"):
+            type = options["type"]
+            if type == "server":
                 start_server()
-            elif mode == "client":
+            elif type == "client":
                 start_client()
-            elif mode == "local":
+            elif type == "local":
                 start_local()
             else:
-                raise ValueError("Mode invalide. Veuillez choisir 'server', 'client' ou 'local'")
+                raise ValueError("Type invalide. Veuillez choisir 'server', 'client' ou 'local'")
         else:
             start_client()
     except ValueError as e:
         print(f"Erreur : {e}")
     except IndexError:
-        print("Erreur : L'argument '--mode' doit être suivi d'une valeur (server, client, local)")
+        print("Erreur : L'argument '--type' doit être suivi d'une valeur (server, client, local)")
     except Exception as e:
         print(f"Une erreur imprévue est survenue : {e}")
 

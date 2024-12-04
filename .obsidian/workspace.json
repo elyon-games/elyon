@@ -164,8 +164,18 @@
   },
   "active": "324065e42c77aa43",
   "lastOpenFiles": [
+    "src/server/database/main.py",
+    "src/server/database/__main__.py",
+    "data/server/dev.sqlite3",
+    "src/server/database/__pycache__/db.cpython-312.pyc",
+    "src/server/database/__pycache__/models.cpython-312.pyc",
+    "src/server/database/db.py",
+    "src/server/database/models.py",
+    "data/server/db.sqlite3",
+    "data/server",
+    "src/server/__pycache__/main.cpython-312.pyc",
+    "src/server/__pycache__",
     "README.md",
-    "documentation/Démarrage.md",
-    "documentation"
+    "documentation/Démarrage.md"
   ]
 }
