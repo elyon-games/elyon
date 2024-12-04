@@ -1,31 +1,34 @@
-import sys
-import common.config
-import common.utils
+import common.config as config
+import common.utils as utils
+import common.args as args
+import common.data as data
 
 global options
-options = common.utils.get_format_args()
+options = args.get_format_args()
 
 global mode
 if options.get("config"):
     mode = options["config"]
 else:
-    mode = common.utils.getMode()
+    mode = utils.getMode()
 
 print("Starting Elyon...")
-if common.utils.getDevModeStatus():
+if utils.getDevModeStatus():
     print(f"Options : {options}")
     print(f"Mode : {mode}")
 
 
 def start_server() -> None:
-    import server.main
-    config_server = common.config.getConfig("server", mode)
-    server.main.Main(config=config_server, options=options)
+    import server.main as Server
+    config_server = config.getConfig("server", mode)
+    data.createServerData()
+    Server.Main(config=config_server, options=options)
 
 def start_client() -> None:
-    import client.main
-    config_client = common.config.getConfig("client", mode)
-    client.main.Main(config=config_client, options=options)
+    import client.main as Client
+    config_client = config.getConfig("client", mode)
+    data.createClientData()
+    Client.Main(config=config_client, options=options)
 
 def start_local() -> None:
     start_server()
@@ -33,8 +36,9 @@ def start_local() -> None:
 
 def Main() -> None:
     try:
-        if options.get("type"):
-            type = options["type"]
+        data.createDataFolder()
+        if args.asArg("type"):
+            type = args.getArg("type")
             if type == "server":
                 start_server()
             elif type == "client":

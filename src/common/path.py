@@ -9,6 +9,7 @@ def get_path(key: str = "default") -> str:
         "client": "./src/client",
         "client_data": "./data/client",
         "server": "./src/server",
-        "server_data": "./data/server"
+        "server_data": "./data/server",
+        "server_public": "./src/server/public",
     }
     return os.path.abspath(paths.get(key, "./"))

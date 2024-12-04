@@ -16,17 +16,3 @@ def getMode():
     if getDevModeStatus():
         return "dev"
     return "prod"
-
-def get_format_args():
-    args = sys.argv[1:]
-    return_args = {}
-    current_key = None
-
-    for arg in args:
-        if arg.startswith("--"):
-            current_key = arg[2:]
-        elif current_key:
-            return_args[current_key] = arg
-            current_key = None
-
-    return return_args
