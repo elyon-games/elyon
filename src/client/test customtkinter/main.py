@@ -9,6 +9,7 @@ header.pack(fill="x")
 
 titre = ctk.CTkLabel(header, text="Bienvenu sur Elyon", fg_color="transparent")
 titre.grid(row=3)
+titre.grid_columnconfigure(0, weight=1)
 
 button_connexion = ctk.CTkButton(header, text="connexion")
 button_connexion.grid(row=10)

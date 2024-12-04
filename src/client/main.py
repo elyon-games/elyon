@@ -1,9 +1,10 @@
 import pygame 
 import pygame_widgets
-from jeu_dammier.main import main as dammier
-from nombre_mystère.nombre_mystère import menu as nb_mystère
 from pygame_widgets.textbox import TextBox
 from pygame_widgets.button import Button
+from jeu_dammier.main import main as dammier
+from nombre_mystère.nombre_mystère import menu as nb_mystère
+from function_menu import *
 
 def menu(screen, font)-> dict:
     menu={
@@ -35,9 +36,6 @@ def menu(screen, font)-> dict:
     
     return menu
 
-def start_nombre_mystere():
-    dammier()
-
 def Main()-> None:
     pygame.init()
     font = pygame.font.Font(None, 80)
@@ -48,7 +46,6 @@ def Main()-> None:
 
     running = True
     clock = pygame.time.Clock()
-    print(type(screen_menu["bouton_dammier"]))
     while running:
         screen.fill((0,0,0))
         events=pygame.event.get()
@@ -70,4 +67,4 @@ def Main()-> None:
         clock.tick(60)
 
     pygame.quit()
-    
+Main()
