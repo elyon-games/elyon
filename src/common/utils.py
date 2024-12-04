@@ -12,6 +12,11 @@ def create_folder_if_not_exists(folder):
 
 def getDevModeStatus(): return "--dev" in sys.argv
 
+def getMode():
+    if getDevModeStatus():
+        return "dev"
+    return "prod"
+
 def get_format_args():
     args = sys.argv[1:]
     return_args = {}

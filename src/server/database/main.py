@@ -1,3 +1,6 @@
-from sqlalchemy import create_engine, Column, Integer, String
+from server.database.db import db
+from server.database.models import User
 
-database = create_engine("")
+def initDB():
+    db.connect()
+    db.create_tables([User])
