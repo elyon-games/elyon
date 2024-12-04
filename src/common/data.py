@@ -1,6 +1,7 @@
 import os
 import common.utils
 import common.path
+import shutil
 
 def create_data(folder_name: str) -> None:
     try:
@@ -12,7 +13,7 @@ def create_data(folder_name: str) -> None:
 
 def clear_data(folder_name: str) -> None:
     try:
-        os.remove(common.path.get_path(folder_name))
+        shutil.rmtree(common.path.get_path(folder_name))
     except FileNotFoundError:
         print(f"Le dossier '{folder_name}' n'existe pas.")
     except PermissionError as e:
