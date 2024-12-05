@@ -15,4 +15,4 @@ Listes des arguments existant :
 | type       | client/server/local                         | Permet de choisir quel partie du projet doit être lancer (local lance les deux en même et modifie les configuration pour les lier) |
 | config     | valeur au choix<br>(ne peut pas être "all") | Permet de passer outre le système de config de base entre prod et dev (cela permet d'avoir une troisième config pour des test)     |
 | clear-data | client/server/all                           | Permet de supprimer les donnée d'une ou l'autre parti selon la valeur (all supprimer les deux)<br>                                 |
-| data-path  |                                             |                                                                                                                                    |
+| data-path  | valeur de vôtre choix                       | Permet de changer le dossiers pour stocker les données                                                                             |
