@@ -21,7 +21,6 @@ class Badge(BaseModel):
     id = CharField(primary_key=True, max_length=50, unique=True, default=lambda: str(uuid.uuid4()))
     name = CharField(max_length=100, unique=True)
     description = TextField(null=True)
-    created_at = DateTimeField(default=datetime.datetime.now)
 
     @classmethod
     def get_all(cls):
@@ -122,3 +121,18 @@ class UserBadge(BaseModel):
     user = ForeignKeyField(User, backref='badges')
     badge = ForeignKeyField(Badge, backref='users')
     created_at = DateTimeField(default=datetime.datetime.now)
+
+class ActivitySession(BaseModel):
+    id = CharField(primary_key=True, max_length=50, unique=True, default=lambda: str(uuid.uuid4()))
+    user = ForeignKeyField(User, backref='sessions')
+    created_at = DateTimeField(default=datetime.datetime.now)
+    updated_at = DateTimeField(default=datetime.datetime.now)
+    data = TextField(null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.user:
+            raise ValueError("La session doit être associée à un utilisateur.")
+        self.updated_at = datetime.datetime.now()
+        return super().save(*args, **kwargs)
+
+

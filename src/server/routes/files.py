@@ -1,5 +1,6 @@
 from flask import request, jsonify, Blueprint
 from server.lib.file_service import create_file, get_all_files, get_file_by_id, delete_file
+from common.path import get_path
 
 route_files = Blueprint("files", __name__)
 
@@ -46,17 +47,15 @@ def upload_file():
     if uploaded_file.filename == '':
         return jsonify({"error": "Le fichier doit avoir un nom valide"}), 400
 
-    # Sauvegarder le fichier sur le serveur
-    upload_path = f"/path/to/uploads/{uploaded_file.filename}"
+    upload_path = f"/{get_path("server_files")}/{uploaded_file.filename}"
     uploaded_file.save(upload_path)
 
-    # Créer une entrée dans la base de données
     file = create_file(
         name=uploaded_file.filename,
         path=upload_path,
         type=uploaded_file.content_type,
         size=str(len(uploaded_file.read())),
-        description=request.form.get("description")
+        description=request.form.get("description"),
     )
 
     return jsonify({"message": "Fichier téléchargé avec succès", "file_id": file.id}), 201

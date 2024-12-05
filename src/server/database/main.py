@@ -1,11 +1,11 @@
 from server.database.db import db
-from server.database.models import User, File, Badge, UserBadge
+from server.database.models import User, File, Badge, UserBadge, ActivitySession
 import common.utils as utils
 from werkzeug.security import generate_password_hash, check_password_hash
 
 def initDB():
     db.connect()
-    db.create_tables([User, Badge, UserBadge, File], safe=True)
+    db.create_tables([File, Badge, User, UserBadge, ActivitySession], safe=True)
 
 def initDefaultDB():
     if utils.getDevModeStatus():

@@ -12,5 +12,6 @@ def get_path(key: str = "default") -> str:
         "server_data": "./data/server",
         "server_public": "./src/server/public",
         "server_files": "./data/server/files",
+        "server_sessions": "./data/server/sessions",
     }
     return os.path.abspath(paths.get(key, "./"))

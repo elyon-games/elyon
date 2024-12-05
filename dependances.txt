@@ -3,3 +3,6 @@ requests;
 pyinstaller;
 flask;
 pyyaml;
+flask_session;
+pyjwt;
+werkzeug;
