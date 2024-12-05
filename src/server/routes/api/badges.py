@@ -3,7 +3,7 @@ from server.database.models import Badge
 
 route_badges = Blueprint("badges", __name__)
 
-@route_badges.route("/badges", methods=["GET"])
+@route_badges.route("/", methods=["GET"])
 def get_badges():
     badges = Badge.select()
     badges_list = [{

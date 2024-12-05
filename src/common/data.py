@@ -1,4 +1,3 @@
-import os
 import common.utils
 import common.path
 import shutil
@@ -30,6 +29,7 @@ def createClientData() -> None:
 
 def createDataFolder() -> None:
     create_data("data")
+    create_data("logs")
 
 def clearAllData() -> None:
     clear_data("data")

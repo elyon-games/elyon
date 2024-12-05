@@ -1,10 +1,10 @@
 from flask import jsonify, Blueprint, request
 from server.database.models import User, UserBadge
-from server.lib.token_service import login_required
+from server.middleware.auth import login_required
 
 route_users = Blueprint("users", __name__)
 
-@route_users.route("/users", methods=["GET"])
+@route_users.route("/", methods=["GET"])
 def get_users():
     users = User.select()
     users_list = [{
@@ -23,7 +23,7 @@ def get_users():
     } for user in users]
     return jsonify(users_list)
 
-@route_users.route("/users/me", methods=["GET"])
+@route_users.route("/me", methods=["GET"])
 @login_required
 def get_profile():
     user = User.get_by_id(request.user_id)
@@ -38,7 +38,7 @@ def get_profile():
         "bio": user.bio,
     })
 
-@route_users.route("/users/<user_id>/badges", methods=["GET"])
+@route_users.route("/<user_id>/badges", methods=["GET"])
 def get_user_badges(user_id):
     user = User.get_or_none(User.id == user_id)
     if not user:

@@ -1,9 +1,13 @@
 import yaml
 import os
 import sys
-import common.path
 
-path_all_config = common.path.get_path("config")
+def resource_path(relative_path):
+    if hasattr(sys, "_MEIPASS"):
+        return os.path.join(sys._MEIPASS, relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
+path_all_config = resource_path("config")
 
 def openConfig(path):
     try:
@@ -20,7 +24,8 @@ def openConfig(path):
         sys.exit(1)
 
 try:
-    common_config = openConfig(os.path.join(path_all_config, "common.yaml"))
+    common_config_path = os.path.join(path_all_config, "common.yaml")
+    common_config = openConfig(common_config_path)
 except Exception as exc:
     common_config = {}
     print(f"Une erreur s'est produite lors du chargement de la configuration commune : {exc}")
@@ -28,7 +33,8 @@ except Exception as exc:
 
 def getConfig(app, mode):
     try:
-        config = openConfig(os.path.join(path_all_config, f"{app}.yaml"))
+        config_path = os.path.join(path_all_config, f"{app}.yaml")
+        config = openConfig(config_path)
         if config is None:
             raise ValueError(f"La configuration pour {app} est vide ou invalide.")
         final_config = config[mode].copy()

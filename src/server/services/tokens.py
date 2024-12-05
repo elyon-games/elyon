@@ -1,7 +1,6 @@
 import jwt
-from datetime import datetime, timedelta, timezone 
-from functools import wraps
-from flask import request, jsonify
+from datetime import datetime, timedelta, timezone
+from server.database.models import User
 
 global configData
 
@@ -15,8 +14,13 @@ def create_jwt_token(user_id):
         raise Exception("Token service non initialisé.")
     if not user_id:
         raise Exception("ID utilisateur invalide.")
+    userData = User.get_by_id(user_id)
+    if not userData:
+        raise Exception("Utilisateur non trouvé.")
     payload = {
-        "user_id": user_id,
+        "user_id": userData.id,
+        "admin": userData.admin,
+        "iss": "elyon",
         "exp": datetime.now(timezone.utc) + timedelta(seconds=configData["jwt"]["expiresIn"]),
         "iat": datetime.now(timezone.utc),
     }
@@ -30,23 +34,8 @@ def verify_jwt_token(token):
         if not token:
             raise Exception("Token invalide.")        
         payload = jwt.decode(token, configData["secret"], algorithms="HS256")
-        return payload["user_id"]
+        return payload
     except jwt.ExpiredSignatureError:
         raise Exception("Le token a expiré.")
     except jwt.InvalidTokenError:
         raise Exception("Token invalide.")
-
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        auth_header = request.headers.get("Authorization")
-        if not auth_header:
-            return jsonify({"error": "Authentification requise"}), 401
-        try:
-            token = auth_header.split(" ")[1]
-            user_id = verify_jwt_token(token)
-            request.user_id = user_id
-        except Exception as e:
-            return jsonify({"error": str(e)}), 401
-        return f(*args, **kwargs)
-    return decorated_function

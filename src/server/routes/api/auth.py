@@ -1,11 +1,12 @@
 from flask import request, jsonify, Blueprint
 from server.database.models import User
 from werkzeug.security import check_password_hash, generate_password_hash
-from server.lib.token_service import create_jwt_token, login_required
+from server.services.tokens import create_jwt_token
+from server.middleware.auth import login_required
 
 route_auth = Blueprint("auth", __name__)
 
-@route_auth.route("/auth/login", methods=["POST"])
+@route_auth.route("/login", methods=["POST"])
 def login():
     data = request.json
     id = data.get("id")
@@ -20,7 +21,7 @@ def login():
 
     return jsonify({"message": "Connexion réussie", "user_id": user.id, "username": user.username, "token": create_jwt_token(user.id)})
 
-@route_auth.route("/auth/register", methods=["POST"])
+@route_auth.route("/register", methods=["POST"])
 def register():
     data = request.json
     username = data.get("username")
@@ -47,7 +48,7 @@ def register():
     user = User.create(username=username, identifiant=identifiant, email=email, password=hashed_password)
     return jsonify({"message": "Utilisateur créé avec succès", "user_id": user.id})
 
-@route_auth.route("/auth/verify", methods=["GET"])
+@route_auth.route("/verify", methods=["GET"])
 @login_required
 def verify():
     """Vérifie la validité du token."""
