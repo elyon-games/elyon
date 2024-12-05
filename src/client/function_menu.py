@@ -1,3 +1,5 @@
+import os.path
+import common.path
 import requests
 import json
 
@@ -19,7 +21,7 @@ def create_account() -> None:
 
 def json_existe() -> bool:
     try :
-        with open("data.json", "r+")as file :
+        with open(os.path.join(common.path.get_path("client_data"), "data.json"), "r+")as file :
             data = json.load(file)
         if data["Name"] and data["Password"]:
             return True, data
