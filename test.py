@@ -7,6 +7,7 @@ pygame.init()
 # Dimensions de la fenêtre
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.RESIZABLE)
+pygame.display.set_icon(pygame.image.load("icon.png"))
 pygame.display.set_caption("Connexion")
 
 # Couleurs personnalisées
