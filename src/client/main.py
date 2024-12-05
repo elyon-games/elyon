@@ -2,8 +2,8 @@ import pygame
 import pygame_widgets
 from pygame_widgets.textbox import TextBox
 from pygame_widgets.button import Button
-from jeu_dammier.main import main as dammier
-from nombre_mystère.nombre_mystère import menu as nb_mystère
+from client.jeu_dammier.main import main as dammier
+from client.nombre_mystère.nombre_mystère import menu as nb_mystere
 from function_menu import *
 
 def menu(screen, font)-> dict:
@@ -30,7 +30,7 @@ def menu(screen, font)-> dict:
                     100,
                     100,
                     text="nomber mystère",
-                    onClick=lambda: nb_mystère()
+                    onClick=lambda: nb_mystere()
                 ), "bouton_pendu": Button(
                     screen,
                     200,

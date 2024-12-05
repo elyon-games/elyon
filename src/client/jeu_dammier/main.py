@@ -3,8 +3,8 @@ import pytmx
 import pyscroll
 import time
 
-from jeu_dammier.player import *
-from jeu_dammier.entite import *
+from .player import *
+from .entite import *
 
 class Game:
     def __init__(self) -> None:

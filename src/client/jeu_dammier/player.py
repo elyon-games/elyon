@@ -1,6 +1,6 @@
 import pygame
 
-from jeu_dammier.entite import *
+from .entite import *
 
 class Player(Entite, pygame.sprite.Sprite) :
     def __init__(self, x, y, screen, tmx_map, objet) -> None:

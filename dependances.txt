@@ -6,3 +6,4 @@ pyyaml;
 flask_session;
 pyjwt;
 werkzeug;
+pyscroll;
