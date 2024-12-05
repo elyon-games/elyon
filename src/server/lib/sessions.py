@@ -14,6 +14,12 @@ class ActivitySession:
     def __init__(self, user_id):
         self.session = ActivitySessionModel.create(user_id=user_id)
     
+    def getID(self):
+        return self.session.id
+    
+    def getUserID(self):
+        return self.session.user
+
     def get(self, key):
         if self.session:
             value = self.session.data.get(key, None)
@@ -42,12 +48,3 @@ class ActivitySession:
     def save(self):
         if self.session:
             self.session.save()
-    
-    def __repr__(self):
-        return f"<Session {self.session.id}>"
-    
-    def __str__(self):
-        return f"Session {self.session.id}"
-    
-    def __bool__(self):
-        return self.session is not None

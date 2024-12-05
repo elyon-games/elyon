@@ -7,7 +7,7 @@ def initDB():
     db.connect()
     db.create_tables([File, Badge, User, UserBadge, ActivitySession], safe=True)
 
-def initDefaultDB():
+def initDefaultDB(config):
     if utils.getDevModeStatus():
         print("Initialisation des données par défaut...")
 
@@ -22,11 +22,11 @@ def initDefaultDB():
         Badge.get_or_create(id=badge_data["id"], defaults=badge_data)
 
     admin_user, created_user = User.get_or_create(
-        username="admin",
         defaults={
+            "username": "Admin",
             "identifiant": "admin",
-            "email": "elyon@younity-mc.fr",
-            "password": generate_password_hash("admin"),
+            "email": config["admin"]["email"],
+            "password": generate_password_hash(config["admin"]["password"]),
             "admin": True
         }
     )
@@ -36,4 +36,6 @@ def initDefaultDB():
         UserBadge.create(user=admin_user, badge=dev_badge)
 
     if utils.getDevModeStatus():
-        print("Initialisation terminée.")
+        admin_session = ActivitySession(admin_user)
+
+    print("Initialisation terminée.")
