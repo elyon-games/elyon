@@ -1,7 +1,7 @@
 import requests
 import json
 
-def login():
+def login() -> None:
     try:
         vérif, data = json_existe()
         print(f"vérif : {vérif}, data : {data}")
@@ -14,7 +14,7 @@ def login():
         create_json("test", "test")
 
 
-def create_account():
+def create_account() -> None:
     print("create_account")
 
 def json_existe() -> bool:
@@ -28,10 +28,10 @@ def json_existe() -> bool:
     except:
         return False, 0
 
-def connexion_auto(data):
+def connexion_auto(data) -> None:
     print("connecter l'utilisateur")
 
-def create_json(name, password):
+def create_json(name, password) -> None:
     data = {"Name": name, "Password": password}
     with open("data.json", "w+")as file :
         json.dump(data, file)

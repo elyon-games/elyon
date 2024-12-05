@@ -12,38 +12,49 @@ def menu(screen, font)-> dict:
             "Mon titre",
               True, 
               (255, 255, 255)
-            ),
-        "bouton_dammier": Button(
-            screen, 
-            300,
-            300,
-            300,
-            150, 
-            text='dammier',
-            fontSize=40,
-            onClick=lambda: dammier()
-        ), 
-        "bouton_nb_mystère": Button(
-            screen,
-            150,
-            300,
-            300,
-            150,
-            text="nomber mystère",
-            onClick=lambda: nb_mystère()
-        )
+            ), "bouton":{
+                "bouton_dammier": Button(
+                    screen, 
+                    0,
+                    100,
+                    100,
+                    100, 
+                    text='dammier',
+                    fontSize=40,
+                    onClick=lambda: dammier()
+                ), 
+                "bouton_nb_mystère": Button(
+                    screen,
+                    100,
+                    100,
+                    100,
+                    100,
+                    text="nomber mystère",
+                    onClick=lambda: nb_mystère()
+                ), "bouton_pendu": Button(
+                    screen,
+                    200,
+                    100,
+                    100,
+                    100,
+                    text="pendu",
+                    onClick=pendu
+                )
+            }
     }
     
     return menu
+
+def pendu():
+    print("pendu")
 
 def Main()-> None:
     pygame.init()
     font = pygame.font.Font(None, 80)
     screen = pygame.display.set_mode((700,700))
     screen_menu = menu(screen, font)
-
-    titre = screen_menu["titre"].get_rect(center=(150,90))
-
+    print(screen_menu)
+    
     running = True
     clock = pygame.time.Clock()
     while running:
@@ -52,15 +63,19 @@ def Main()-> None:
         for event in events:
             if event.type == pygame.QUIT:
                 running = False
-        
-        screen.blit(screen_menu["titre"], titre)
+
+        for i in screen_menu.keys():
+            if i != "bouton":
+                screen.blit(screen_menu[i], screen_menu[i].get_rect(center=(0,0)))
+            else :
+                for y in screen_menu[i].values():
+                    print("y :",y)
+                    y.draw()
 
         pygame_widgets.update(events)
         
         for i in screen_menu:
             print(i)
-
-        screen_menu["bouton_dammier"].draw()
 
 
         pygame.display.update()
