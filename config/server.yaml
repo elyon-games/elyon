@@ -1,9 +1,14 @@
 all:
   host: "0.0.0.0"
   port: 3300
+  jwt:
+    expiresIn: 3600
 
 dev:
-  test: "test"
-  
+  secret: "Zn36aEDySypAqPLfp4QXVHGfC_PMXbVKkZ1P_2xjfrJRUtLavr"
+  admin:
+    email: "elyon@younity-mc.fr"
+    password: "admin" 
+
 prod:
-  test: "test"
+  secret: "aDhX0RjDo-9oqXcvvOr_l1fKawZN2NPYTzA0BNXcS1HXVTSqK6"
