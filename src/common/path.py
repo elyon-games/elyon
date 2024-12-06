@@ -11,16 +11,23 @@ def initPath(path_data_t="./data") -> None:
     path_data = path_data_t
     print("Path Data : ", path_data)
     paths = {
+        # main code
         "src": "./src",
-        "logs": os.path.join(path_data, "logs"),
+        "common": "./src/common",
+        # data
+        "data": path_data,
+        # interne
         "config": "./config",
         "assets": "./assets",
-        "data": f"{path_data}",
+        # logs
+        "logs": os.path.join(path_data, "logs"),
+        # client
         "client": "./src/client",
         "client_data": os.path.join(path_data, "client"),
+        # server
         "server": "./src/server",
         "server_public": "./src/server/public",
-        "server_public": "./src/server/templates",
+        "server_templates": "./src/server/templates",
         "server_data": os.path.join(path_data, "server"),
         "server_database": os.path.join(path_data, "server/database"),
         "server_files": os.path.join(path_data, "server/files"),

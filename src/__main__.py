@@ -1,4 +1,5 @@
 import traceback
+import threading
 import common.config as config
 import common.utils as utils
 import common.args as args
@@ -29,8 +30,14 @@ def start_client() -> None:
     Client.Main(config=config_client, options=options)
 
 def start_local() -> None:
-    start_server()
-    start_client()
+    server_thread = threading.Thread(target=start_server, name="ServerThread", daemon=True)
+    client_thread = threading.Thread(target=start_client, name="ClientThread", daemon=True)
+
+    server_thread.start()
+    client_thread.start()
+
+    client_thread.join()
+    print("Le client a terminé.")
 
 def Main() -> None:
     global options
@@ -54,7 +61,7 @@ def Main() -> None:
         print(f"Mode : {mode}")
         print(f"Type : {type}")
         print(f"Config : {configMode}")
-
+        
         data.createDataFolder()
         if type == "server":
             start_server()

@@ -26,7 +26,7 @@ def createServerData() -> None:
 
 def createClientData() -> None:
     create_data("client_data")
-
+    
 def createDataFolder() -> None:
     create_data("data")
     create_data("logs")
