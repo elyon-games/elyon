@@ -3,6 +3,35 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from common.time import get_current_time
 from server.services.config import configData as config
 
+class Files(BaseModel):
+    def __init__(self):
+        super().__init__({
+            "id": {"type": int, "required": True, "unique": True},
+            "name": {"type": str, "required": True},
+            "path": {"type": str, "required": True},
+            "type": {"type": str, "required": True},
+            "size": {"type": str, "required": True},
+            "created_at": {"type": str, "required": True},
+            "updated_at": {"type": str, "required": True}
+        }, default_data=[])
+
+    def upload(self, name, path, type, size):
+        file = {
+            "id": self.get_new_id(),
+            "name": name,
+            "path": path,
+            "type": type,
+            "size": size,
+            "created_at": get_current_time(),
+            "updated_at": get_current_time()
+        }
+        self.insert(file)
+        self.save()
+        return file
+
+    def get_by_id(self, file_id):
+        return next((file for file in self.data if file["id"] == file_id), None)
+
 class ActivitySessions(BaseModel):
     def __init__(self):
         super().__init__({

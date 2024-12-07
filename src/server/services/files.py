@@ -1,39 +1,27 @@
-from server.database.models import File
+from server.database.db import files as Files
 
-def create_file(name, path, type=None, size=None, description=None):
-    """Crée un fichier dans la base de données."""
-    file = File.create(
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'pdf', 'txt'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def create_file(name, path, type=None, size=None):
+    file = Files.upload(
         name=name,
         path=path,
         type=type,
-        size=size,
-        description=description
+        size=size
     )
     return file
 
 def get_all_files():
-    """Récupère tous les fichiers."""
-    return File.select()
+    return Files.get_all()
 
 def get_file_by_id(file_id):
-    """Récupère un fichier par son ID."""
-    return File.get_or_none(File.id == file_id)
-
-def update_file(file_id, **kwargs):
-    """Met à jour les informations d'un fichier."""
-    file = get_file_by_id(file_id)
-    if not file:
-        return None
-    for key, value in kwargs.items():
-        if hasattr(file, key):
-            setattr(file, key, value)
-    file.save()
-    return file
+    return Files.get_by_id(file_id)
 
 def delete_file(file_id):
-    """Supprime un fichier par son ID."""
     file = get_file_by_id(file_id)
     if file:
-        file.delete_instance()
         return True
     return False
