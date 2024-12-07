@@ -23,6 +23,9 @@ def clear_data(folder_name: str) -> None:
 def createServerData() -> None:
     create_data("server_data")
     create_data("server_files")
+    create_data("server_database")
+    create_data("server_sessions")
+    create_data("server_files")
 
 def createClientData() -> None:
     create_data("client_data")

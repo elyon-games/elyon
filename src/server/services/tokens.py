@@ -1,13 +1,7 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from server.database.models import User
-
-global configData
-
-def initToken(config) -> None:
-    global configData
-    configData = config
-    print("Token Service Initialized.")
+from server.database.db import users as User
+from server.services.config import configData
 
 def create_jwt_token(user_id):
     if not configData:
@@ -18,8 +12,8 @@ def create_jwt_token(user_id):
     if not userData:
         raise Exception("Utilisateur non trouvé.")
     payload = {
-        "user_id": userData.id,
-        "admin": userData.admin,
+        "user_id": userData.get("id"),
+        "admin": userData.get("admin", False),
         "iss": "elyon",
         "exp": datetime.now(timezone.utc) + timedelta(seconds=configData["jwt"]["expiresIn"]),
         "iat": datetime.now(timezone.utc),
