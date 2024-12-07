@@ -1,41 +1,116 @@
-from server.database.db import db
-from server.database.models import User, File, Badge, UserBadge, ActivitySession
+import common.path as path
 import common.utils as utils
-from werkzeug.security import generate_password_hash, check_password_hash
+import json
+import os.path
 
-def initDB():
-    db.connect()
-    db.create_tables([File, Badge, User, UserBadge, ActivitySession], safe=True)
+def get_table_path(table):
+    return os.path.join(path.get_path("server_database"), f"{table}-{utils.getMode()}.json")
 
-def initDefaultDB(config):
-    if utils.getDevModeStatus():
-        print("Initialisation des données par défaut...")
+class BaseModel:
+    def __init__(self, schema, default_data=[]):
+        self.table = self.__class__.__name__.lower()
+        self.db_path = get_table_path(self.table)
+        self.schema = schema
+        utils.create_file_if_not_exists(self.db_path, "[]")
+        self.data = self.load()
+        if not self.data:
+            self.initialize_default_data(default_data)
+        self.clean_data()
 
-    default_badges = [
-        {"id": "dev", "name": "Développeur", "description": "Badge attribué aux développeurs."},
-        {"id": "admin", "name": "Administrateur", "description": "Badge pour les administrateurs."},
-        {"id": "newbie", "name": "Nouveau", "description": "Badge attribué aux nouveaux utilisateurs."},
-        {"id": "vip", "name": "VIP", "description": "Badge attribué aux utilisateurs VIP."}
-    ]
+    def save(self):
+        with open(self.db_path, 'w') as file:
+            json.dump(self.data, file)
 
-    for badge_data in default_badges:
-        Badge.get_or_create(id=badge_data["id"], defaults=badge_data)
+    def load(self):
+        if os.path.getsize(self.db_path) == 0:
+            return []
+        with open(self.db_path, 'r') as file:
+            return json.load(file)
 
-    admin_user, created_user = User.get_or_create(
-        defaults={
-            "username": "Admin",
-            "identifiant": "admin",
-            "email": config["admin"]["email"],
-            "password": generate_password_hash(config["admin"]["password"]),
-            "admin": True
-        }
-    )
+    def initialize_default_data(self, default_data):
+        for record in default_data:
+            self.insert(record)
 
-    dev_badge = Badge.get(Badge.id == "dev")
-    if not admin_user.badges.where(UserBadge.badge == dev_badge).exists():
-        UserBadge.create(user=admin_user, badge=dev_badge)
+    def remove_extra_fields(self, record):
+        return {key: record[key] for key in self.schema.keys()}
+    
+    def get_all(self):
+        return self.data
+    
+    def get(self, record_id):
+        return next((item for item in self.data if item['id'] == record_id), None)
+    
+    def delete(self, record_id):
+        record = next((item for item in self.data if item['id'] == record_id), None)
+        if not record:
+            raise ValueError(f"Enregistrement avec l'id {record_id} non trouvé")
+        self.data.remove(record)
+        self.save()
+        return record
 
-    if utils.getDevModeStatus():
-        admin_session = ActivitySession(admin_user)
+    def insert(self, record):
+        self.validate(record)
+        if any(item['id'] == record['id'] for item in self.data):
+            raise ValueError(f"Un enregistrement avec l'id {record['id']} existe déjà")
+        self.data.append(record)
+        self.save()
+        return record
 
-    print("Initialisation terminée.")
+    def update(self, record_id, updates):
+        record = next((item for item in self.data if item['id'] == record_id), None)
+        if not record:
+            raise ValueError(f"Enregistrement avec l'id {record_id} non trouvé")
+        
+        for key, value in updates.items():
+            if key in self.schema:
+                if not isinstance(value, self.schema[key]['type']):
+                    raise TypeError(f"Le champ {key} doit être de type {self.schema[key]['type'].__name__}")
+                if self.schema[key].get('unique') and any(item[key] == value for item in self.data if item['id'] != record_id):
+                    raise ValueError(f"Le champ {key} doit être unique")
+                record[key] = value
+        self.save()
+
+    def validate(self, record):
+        for field, properties in self.schema.items():
+            if properties.get('required') and field not in record:
+                raise ValueError(f"Champ manquant: {field}")
+            
+            if field in record:
+                if not isinstance(record[field], properties['type']):
+                    raise TypeError(f"Le champ {field} doit être de type {properties['type'].__name__}")
+                
+                if properties.get('unique') and any(item[field] == record[field] 
+                    for item in self.data if item.get('id') != record.get('id')):
+                    raise ValueError(f"Le champ {field} doit être unique")
+
+            if 'default' in properties and field not in record:
+                record[field] = properties['default']
+
+        if 'id' not in record:
+            raise ValueError("L'enregistrement doit avoir un champ 'id'")
+
+    def clean_data(self):
+        self.data = [self.clean_record(record) for record in self.data]
+        self.data = [self.remove_extra_fields(record) for record in self.data]
+        self.save()
+
+    def clean_record(self, record):
+        cleaned = {}
+        for field, properties in self.schema.items():
+            if field in record:
+                cleaned[field] = record[field]
+            elif 'default' in properties:
+                cleaned[field] = properties['default']
+            else:
+                raise ValueError(f"Champ manquant: {field}")
+        return cleaned
+    
+    def insert_or_get_existing(self, record):
+        self.validate(record)
+        existing = next((item for item in self.data if item['id'] == record['id']), None)
+        if existing:
+            return existing
+        self.data.append(record)
+        self.save()
+        return record
+    

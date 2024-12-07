@@ -2,8 +2,7 @@ import os
 import common.path
 from flask import Flask, session, request
 from server.services.sessions import initSessions
-from server.services.tokens import initToken, verify_jwt_token
-from server.database.main import initDB, initDefaultDB
+from server.services.tokens import verify_jwt_token
 from server.routes.api.main import route_api
 from server.routes.web.main import route_web
 
@@ -12,9 +11,6 @@ global app
 def Main(config, options):
     global app
     print("Start Server...")
-
-    initDB()
-    initDefaultDB(config=config)
     
     app = Flask(
         f"Elyon Server ({__name__})",
@@ -23,8 +19,7 @@ def Main(config, options):
         template_folder=common.path.get_path("server_templates")
     )
     
-    initToken(config=config)
-    initSessions(app=app, config=config, options=options)
+    initSessions(app=app)
     initRoute()
 
     all_files = [

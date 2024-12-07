@@ -7,3 +7,6 @@ flask_session;
 pyjwt;
 werkzeug;
 pyscroll;
+pygame-scrollbar;
+pygame_animation;
+smoothing_methods;

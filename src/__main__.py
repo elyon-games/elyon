@@ -1,4 +1,5 @@
 import traceback
+import threading
 import common.config as config
 import common.utils as utils
 import common.args as args
@@ -13,24 +14,30 @@ global type
 global logger
 
 def start_server() -> None:
-    import server.main as Server
-    config_server = config.getConfig("server", configMode)
     if args.asArg("clear-data") and args.getArg("clear-data") in ["server", "all"]:
         data.clearServerData()
     data.createServerData()
+    import server.main as Server
+    config_server = config.getConfig("server", configMode)
     Server.Main(config=config_server, options=options)
 
 def start_client() -> None:
-    import client.main as Client
-    config_client = config.getConfig("client", configMode)
     if args.asArg("clear-data") and args.getArg("clear-data") in ["client", "all"]:
         data.clearClientData()
     data.createClientData()
+    import client.main as Client
+    config_client = config.getConfig("client", configMode)
     Client.Main(config=config_client, options=options)
 
 def start_local() -> None:
-    start_server()
-    start_client()
+    server_thread = threading.Thread(target=start_server, name="ServerThread", daemon=True)
+    client_thread = threading.Thread(target=start_client, name="ClientThread", daemon=True)
+
+    server_thread.start()
+    client_thread.start()
+
+    client_thread.join()
+    print("Le client a terminé.")
 
 def Main() -> None:
     global options
@@ -46,6 +53,8 @@ def Main() -> None:
 
         path.initPath(options.get("data-path") if options.get("data-path") else "./data")
 
+        data.createDataFolder()
+
         logger = Logger.LoggerManager(path.get_path("logs"))
         logger(f"Logger start")
 
@@ -54,8 +63,7 @@ def Main() -> None:
         print(f"Mode : {mode}")
         print(f"Type : {type}")
         print(f"Config : {configMode}")
-
-        data.createDataFolder()
+        
         if type == "server":
             start_server()
         elif type == "client":

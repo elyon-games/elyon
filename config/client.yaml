@@ -1,5 +1,10 @@
 all:
+  screen:
+    width: 800
+    height: 600
 
 dev:
+  test: "test"
 
 prod:
+  test: "test"

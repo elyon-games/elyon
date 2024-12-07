@@ -5,7 +5,7 @@ all:
     expiresIn: 3600
 
 dev:
-  debug: true
+  debug: false
   secret: "Zn36aEDySypAqPLfp4QXVHGfC_PMXbVKkZ1P_2xjfrJRUtLavr"
   admin:
     email: "elyon@younity-mc.fr"
