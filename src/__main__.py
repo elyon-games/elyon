@@ -2,7 +2,6 @@ import sys
 import threading
 import requests
 import traceback
-import customtkinter as ctk
 import common.config as config
 import common.utils as utils
 import common.args as args
@@ -48,6 +47,7 @@ def start_local() -> None:
     print("Le client a terminé.")
 
 def start_GUI() -> None:
+    import customtkinter as ctk
     def on_configure_server_click():
         global server_host
         global online
@@ -66,9 +66,6 @@ def start_GUI() -> None:
                 status_label.configure(text="Erreur de connexion au serveur.", text_color="red")
         else:
             status_label.configure(text="Veuillez entrer une adresse IP valide.", text_color="red")
-
-    def on_start_server():
-        start_server()
 
     def on_start_client():
         global online
@@ -89,7 +86,7 @@ def start_GUI() -> None:
     app = ctk.CTk()
     app.title("Elyon - Menu principal")
     app.geometry("500x500")
-    app.resizable(False, False)
+    app.iconbitmap(f"{path.get_path("assets")}\logo\\round.ico")
     app.protocol("WM_DELETE_WINDOW", on_close)
 
     tabview = ctk.CTkTabview(app)
@@ -98,7 +95,7 @@ def start_GUI() -> None:
     tab_public = tabview.add("Serveur Public")
     public_label = ctk.CTkLabel(tab_public, text="Démarrer un serveur public", font=("Arial", 16))
     public_label.pack(pady=10)
-    public_button = ctk.CTkButton(tab_public, text="Démarrer", command=on_start_server, height=50, width=200)
+    public_button = ctk.CTkButton(tab_public, text="Démarrer", command=on_start_client, height=50, width=200)
     public_button.pack(pady=20)
 
     tab_private = tabview.add("Serveur Privé")

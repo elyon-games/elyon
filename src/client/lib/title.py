@@ -1,4 +1,5 @@
 import pygame
+from common.utils import getDevModeStatus
 
 global username
 username = None
@@ -8,7 +9,10 @@ def setUsername(usernameSet) -> None:
     username = usernameSet
 
 def changeTitle(title) -> None:
-    if username :
-        pygame.display.set_caption(f"Elyon Client ({username}) - {title}")
-    else: 
-        pygame.display.set_caption(f"Elyon Client - {title}")
+    dev_mode = getDevModeStatus()
+    dev_suffix = " {Développement}" if dev_mode else ""
+    
+    if username:
+        pygame.display.set_caption(f"Elyon Client{dev_suffix} ({username}) - {title}")
+    else:
+        pygame.display.set_caption(f"Elyon Client{dev_suffix} - {title}")
