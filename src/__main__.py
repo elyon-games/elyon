@@ -1,7 +1,8 @@
 import sys
-import traceback
 import threading
 import requests
+import traceback
+import customtkinter as ctk
 import common.config as config
 import common.utils as utils
 import common.args as args
@@ -47,26 +48,18 @@ def start_local() -> None:
     print("Le client a terminé.")
 
 def start_GUI() -> None:
-    import customtkinter as ctk
-    
-    def on_client_click():
-        app.destroy()
-        start_client()
-
-    def on_local_click():
-        app.destroy()
-        start_local()
-
     def on_configure_server_click():
         global server_host
+        global online
         ip = ip_entry.get()
         if ip:
             try:
                 res = requests.get(f"{ip}/api/client/info")
                 if res.status_code == 200:
                     server_host = ip
+                    online = False
                     status_label.configure(text="Adresse IP valide!", text_color="green")
-                    connect_button.pack(pady=10)
+                    private_button.pack(pady=20)
                 else:
                     status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
             except requests.exceptions.RequestException:
@@ -74,9 +67,20 @@ def start_GUI() -> None:
         else:
             status_label.configure(text="Veuillez entrer une adresse IP valide.", text_color="red")
 
-    def on_connect_click():
+    def on_start_server():
+        start_server()
+
+    def on_start_client():
+        global online
+        online = True
         app.destroy()
         start_client()
+
+    def on_start_local():
+        global online
+        online = False
+        app.destroy()
+        start_local()
 
     def on_close():
         app.destroy()
@@ -84,39 +88,43 @@ def start_GUI() -> None:
 
     app = ctk.CTk()
     app.title("Elyon - Menu principal")
-    app.geometry("400x400")
+    app.geometry("500x500")
+    app.resizable(False, False)
     app.protocol("WM_DELETE_WINDOW", on_close)
 
-    title = ctk.CTkLabel(app, text="Bienvenue sur Elyon", font=("Arial", 30))
-    title.pack(pady=5)
-    
-    subtitle_label = ctk.CTkLabel(app, text="Choisissez un mode", font=("Arial", 20))
-    subtitle_label.pack(pady=5)
+    tabview = ctk.CTkTabview(app)
+    tabview.pack(expand=True, fill="both", padx=10, pady=10)
 
-    client_button = ctk.CTkButton(app, text="Jouer Online", command=on_client_click)
-    client_button.pack(pady=10)
+    tab_public = tabview.add("Serveur Public")
+    public_label = ctk.CTkLabel(tab_public, text="Démarrer un serveur public", font=("Arial", 16))
+    public_label.pack(pady=10)
+    public_button = ctk.CTkButton(tab_public, text="Démarrer", command=on_start_server, height=50, width=200)
+    public_button.pack(pady=20)
 
-    local_button = ctk.CTkButton(app, text="Jouer Offline", command=on_local_click)
-    local_button.pack(pady=10)
+    tab_private = tabview.add("Serveur Privé")
+    private_label = ctk.CTkLabel(tab_private, text="Configurer le serveur privé", font=("Arial", 16))
+    private_label.pack(pady=10)
 
-    ip_label = ctk.CTkLabel(app, text="Adresse IP du serveur :")
-    ip_label.pack(pady=(10, 5))
+    ip_entry = ctk.CTkEntry(tab_private, placeholder_text="Entrez l'adresse IP du serveur", height=40, width=300)
+    ip_entry.pack(pady=10)
 
-    ip_entry = ctk.CTkEntry(app, placeholder_text="Entrez l'adresse IP")
-    ip_entry.pack(pady=5)
-
-    configure_button = ctk.CTkButton(app, text="Configurer le serveur", command=on_configure_server_click)
+    configure_button = ctk.CTkButton(tab_private, text="Configurer", command=on_configure_server_click, height=50, width=200)
     configure_button.pack(pady=10)
 
-    status_label = ctk.CTkLabel(app, text="")
+    status_label = ctk.CTkLabel(tab_private, text="")
     status_label.pack(pady=(5, 5))
 
-    connect_button = ctk.CTkButton(app, text="Connecter", command=on_connect_click)
-    connect_button.pack_forget()  # Masquer initialement le bouton Connecter
+    private_button = ctk.CTkButton(tab_private, text="Connecter", command=on_start_client, height=50, width=200)
+    private_button.pack(pady=20)
+    private_button.pack_forget()
+
+    tab_offline = tabview.add("Mode Offline")
+    offline_label = ctk.CTkLabel(tab_offline, text="Jouer en mode hors ligne", font=("Arial", 16))
+    offline_label.pack(pady=10)
+    offline_button = ctk.CTkButton(tab_offline, text="Démarrer", command=on_start_local, height=50, width=200)
+    offline_button.pack(pady=20)
 
     app.mainloop()
-
-    sys.exit()
 
 def Main() -> None:
     global options
@@ -126,6 +134,7 @@ def Main() -> None:
     global logger
     global online
     global server_host
+
     server_host = False
     online = False
 
@@ -150,7 +159,7 @@ def Main() -> None:
 
         if type == "gui":
             start_GUI()
-        if type == "server":
+        elif type == "server":
             start_server()
         elif type == "client":
             online = True
