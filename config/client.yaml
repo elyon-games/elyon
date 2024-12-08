@@ -4,7 +4,9 @@ all:
     height: 600
 
 dev:
-  test: "test"
+  server: 
+    host: "localhost:3300"
 
 prod:
-  test: "test"
+  server:
+    host: "elyon.younity-mc.fr"
