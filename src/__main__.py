@@ -7,6 +7,7 @@ import common.utils as utils
 import common.args as args
 import common.path as path
 import common.data as data
+import common.assets as assets
 import common.logger as Logger
 
 def start_server() -> None:
@@ -86,7 +87,7 @@ def start_GUI() -> None:
     app = ctk.CTk()
     app.title("Elyon - Menu principal")
     app.geometry("500x500")
-    app.iconbitmap(f"{path.get_path("assets")}\logo\\round.ico")
+    app.iconbitmap(assets.getAsset("/logo/round.ico"))
     app.protocol("WM_DELETE_WINDOW", on_close)
 
     tabview = ctk.CTkTabview(app)

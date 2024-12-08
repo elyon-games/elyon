@@ -1,4 +1,5 @@
 import os.path
+import common.assets
 
 global path_data
 global paths
@@ -18,7 +19,7 @@ def initPath(path_data_t="./data") -> None:
         "data": path_data,
         # interne
         "config": "./config",
-        "assets": "./assets",
+        "assets": common.assets.getAsset("./assets"),
         # logs
         "logs": os.path.join(path_data, "logs"),
         # client

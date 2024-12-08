@@ -13,6 +13,6 @@ if exist build rmdir /S /Q build
 
 set "pyinstaller_path=%appdata%\Python\Python312\Scripts\pyinstaller.exe"
 
-"%pyinstaller_path%" --add-data "%config_path%:config" --add-data "%pulic_server%:server_public_files" --onefile "%src_path%" --noconsole --icon="%assets_path%\logo\round.ico"
+"%pyinstaller_path%" --add-data "%config_path%:config" --add-data "%pulic_server%:server_public_files" --add-data "%assets_path%:assets" --onefile "%src_path%" --icon="%assets_path%\logo\round.ico"
 
 pause

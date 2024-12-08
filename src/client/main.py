@@ -3,6 +3,7 @@ from client.lib.scrollBar import ScrollBar
 from client.lib.title import changeTitle
 from client.style.gradient import draw_gradient
 import common.path as path
+import common.assets as assets
 
 BACKGROUND_TOP = (16, 185, 129) # émeraude
 BACKGROUND_BOTTOM = (37, 99, 235)  # Bleu
@@ -10,7 +11,7 @@ BACKGROUND_BOTTOM = (37, 99, 235)  # Bleu
 def Main(config, options):
     pygame.init()
     changeTitle("Acceuil")
-    icon = pygame.image.load(f"{path.get_path("assets")}\logo\\round.ico")
+    icon = pygame.image.load(assets.getAsset("/logo/round.ico"))
     pygame.display.set_icon(icon)
     window_width, window_height = 800, 600
     window = pygame.display.set_mode((window_width, window_height))
