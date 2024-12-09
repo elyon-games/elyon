@@ -23,6 +23,18 @@ def openConfig(path):
         print(f"Une erreur inattendue s'est produite lors de l'ouverture de {path} : {exc}")
         sys.exit(1)
 
+def ensure_config_exists():
+    global path_all_config
+    external_config_path = os.path.join(os.path.abspath("."), "config")
+    if os.path.exists(external_config_path) and os.path.isdir(external_config_path):
+        path_all_config = external_config_path
+    else:
+        print("Info : Le dossier 'config' n'a pas été trouvé à côté de l'exécutable.")
+        print("Utilisation des fichiers de configuration embarqués.")
+        path_all_config = resource_path("config")
+
+ensure_config_exists()
+
 try:
     common_config_path = os.path.join(path_all_config, "common.yaml")
     common_config = openConfig(common_config_path)

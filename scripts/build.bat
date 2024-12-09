@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
-set "current_dir=%~dp0"
-set "src_path=%current_dir%src/__main__.py"
+set "current_dir=%~dp0../"
+set "src_path=%current_dir%src/main.py"
 set "assets_path=%current_dir%assets"
 set "config_path=%current_dir%config"
 set "pulic_server=%current_dir%src/server/public"

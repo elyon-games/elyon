@@ -60,7 +60,8 @@ def start_GUI() -> None:
                     server_host = ip
                     online = False
                     status_label.configure(text="Adresse IP valide!", text_color="green")
-                    private_button.pack(pady=20)
+                    ip_entry.pack_forget()
+                    configure_button.configure(text="Se connecter", command=on_start_client)
                 else:
                     status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
             except requests.exceptions.RequestException:
@@ -86,9 +87,10 @@ def start_GUI() -> None:
 
     app = ctk.CTk()
     app.title("Elyon - Menu principal")
-    app.geometry("500x500")
+    app.geometry("400x250")
     app.iconbitmap(assets.getAsset("/logo/round.ico"))
     app.protocol("WM_DELETE_WINDOW", on_close)
+    app.resizable(False, False)
 
     tabview = ctk.CTkTabview(app)
     tabview.pack(expand=True, fill="both", padx=10, pady=10)
@@ -96,30 +98,26 @@ def start_GUI() -> None:
     tab_public = tabview.add("Serveur Public")
     public_label = ctk.CTkLabel(tab_public, text="Démarrer un serveur public", font=("Arial", 16))
     public_label.pack(pady=10)
-    public_button = ctk.CTkButton(tab_public, text="Démarrer", command=on_start_client, height=50, width=200)
+    public_button = ctk.CTkButton(tab_public, text="Démarrer", command=on_start_client, height=50, width=200, fg_color="green")
     public_button.pack(pady=20)
 
     tab_private = tabview.add("Serveur Privé")
     private_label = ctk.CTkLabel(tab_private, text="Configurer le serveur privé", font=("Arial", 16))
-    private_label.pack(pady=10)
+    private_label.pack(pady=2)
 
     ip_entry = ctk.CTkEntry(tab_private, placeholder_text="Entrez l'adresse IP du serveur", height=40, width=300)
-    ip_entry.pack(pady=10)
+    ip_entry.pack(pady=2)
 
-    configure_button = ctk.CTkButton(tab_private, text="Configurer", command=on_configure_server_click, height=50, width=200)
-    configure_button.pack(pady=10)
+    configure_button = ctk.CTkButton(tab_private, text="Configurer", command=on_configure_server_click, height=50, width=200, fg_color="green")
+    configure_button.pack(pady=2)
 
     status_label = ctk.CTkLabel(tab_private, text="")
     status_label.pack(pady=(5, 5))
 
-    private_button = ctk.CTkButton(tab_private, text="Connecter", command=on_start_client, height=50, width=200)
-    private_button.pack(pady=20)
-    private_button.pack_forget()
-
     tab_offline = tabview.add("Mode Offline")
     offline_label = ctk.CTkLabel(tab_offline, text="Jouer en mode hors ligne", font=("Arial", 16))
     offline_label.pack(pady=10)
-    offline_button = ctk.CTkButton(tab_offline, text="Démarrer", command=on_start_local, height=50, width=200)
+    offline_button = ctk.CTkButton(tab_offline, text="Démarrer", command=on_start_local, height=50, width=200, fg_color="green")
     offline_button.pack(pady=20)
 
     app.mainloop()

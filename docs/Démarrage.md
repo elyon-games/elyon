@@ -1,10 +1,4 @@
-Vous pouvez utiliser deux "**.bat**" différent pour démarrer Elyon :
-- ./start.bat
-Démarrer l'application en vérifiant les dépendance enregistrer dans le fichier "dependances.txt"
-- ./dev.bat
-Démarrer tout simplement l'application.
-
-Si vous vous avoir la commande complet pour installer les dépendances vous pouvez effectuer ./start.bat --dependances-cmd
+Vous pouvez utiliser le **"./start.bat"** pour démarrer Elyon :
 ### **Arguments** :
 Tout les arguments sauf une exceptions sont de se format ci-contre : '--{clé} {valeur}'
 Listes des arguments existant :
