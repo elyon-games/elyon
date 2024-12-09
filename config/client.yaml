@@ -5,8 +5,9 @@ all:
 
 dev:
   server: 
-    host: "localhost:3300"
+    # host: "localhost:3300"
+    host: "play.elyon.younity-mc.fr"
 
 prod:
   server:
-    host: "elyon.younity-mc.fr"
+    host: "play.elyon.younity-mc.fr"

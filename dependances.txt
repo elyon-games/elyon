@@ -10,3 +10,5 @@ pyscroll;
 pygame-scrollbar;
 pygame_animation;
 smoothing_methods;
+customtkinter;
+tkinter;
