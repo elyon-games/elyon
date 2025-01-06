@@ -4,7 +4,7 @@ from client.lib.title import changeTitle
 from client.style.gradient import draw_gradient
 import common.path as path
 import common.assets as assets
-from client.lib.screen.show import showScreen, updateScreen
+from client.lib.screen.controller import showScreen, updateScreen
 
 BACKGROUND_TOP = (16, 185, 129)  # émeraude
 BACKGROUND_BOTTOM = (37, 99, 235)  # Bleu
