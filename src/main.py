@@ -20,7 +20,6 @@ def start_server() -> None:
         data.clearServerData()
     data.createServerData()
     import server.main as Server
-    config_server = config.getConfig("server")
     Server.Main()
 
 def start_client() -> None:
@@ -29,7 +28,6 @@ def start_client() -> None:
         data.clearClientData()
     data.createClientData()
     import client.main as Client
-    config_client = config.getConfig("client")
     config.setConfigParameter("client", "online", online)
     if not online and server_host:
         config.setConfigParameter("client", "server.host", server_host)
