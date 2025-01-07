@@ -1,4 +1,5 @@
 import pygame
+from client.types import EVENTS, KEYS, EVENT, CLOCK
 class Screen():
     def __init__(self, id):
         self.id = id
@@ -23,12 +24,12 @@ class Screen():
         self.surface = None
         self.isMounted = False
 
-    def Update(self, window: pygame.Surface):
+    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS, options: dict, config: dict, clock: CLOCK):
         if self.isMounted:
             self.window = window
             self.window.blit(self.surface, (0, 0), self.surface.get_rect())
 
-    def HandleEvent(self, type, event):
+    def HandleEvent(self, type: int, event: EVENT):
         pass
 
     def calculate_position(self, percentage_x, percentage_y, size_x=0, size_y=0):

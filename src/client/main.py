@@ -1,28 +1,29 @@
 import pygame
-from client.lib.scrollBar import ScrollBar
+
+pygame.init()
+pygame.font.init()
+pygame.mixer.init()
+
+# from client.lib.scrollBar import ScrollBar
 from client.lib.title import changeTitle
-from client.style.gradient import draw_gradient
-import common.path as path
+# import common.path as path
 import common.assets as assets
+from client.style.constants import WHITE
+from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
 
-BACKGROUND_TOP = (16, 185, 129)  # émeraude
-BACKGROUND_BOTTOM = (37, 99, 235)  # Bleu
-
 def InitPygame():
-    pygame.init()
-    pygame.font.init()
-    pygame.mixer.init()
     icon = pygame.image.load(assets.getAsset("/logo/round.ico"))
     pygame.display.set_icon(icon)
     changeTitle("Chargment...")
     window_width, window_height = 800, 600
     window = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
     clock = pygame.time.Clock()
-    return window, clock    
+    return window, clock
 
 def Main(config, options):
-    global window, clock
+    global window, clock, ms_per_frame
+    ms_per_frame = 10
     window, clock = InitPygame()
     changeTitle("Acceuil")
 
@@ -43,9 +44,18 @@ def Main(config, options):
         elif keys[pygame.K_t]:
             showScreen(window, "test")
 
+        updateScreen(window=window, events=events, keys=keys, options=options, config=config, clock=clock)
 
-        updateScreen(window, events)
+        fps = int(clock.get_fps())
+        current_ms_per_frame = clock.get_time()
+        if abs(current_ms_per_frame - ms_per_frame) >= 5:
+            ms_per_frame = current_ms_per_frame
+        fps_text = getFont("hud_info").render(f"FPS : {fps}", True, WHITE)
+        ms_text = getFont("hud_info").render(f"MSPF : {ms_per_frame}", True, WHITE)
+        window.blit(fps_text, (window.get_width() - fps_text.get_width() - 10, 10))
+        window.blit(ms_text, (window.get_width() - ms_text.get_width() - 10, 25))
+
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(120)
 
     pygame.quit()
