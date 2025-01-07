@@ -30,9 +30,10 @@ def start_client() -> None:
     data.createClientData()
     import client.main as Client
     config_client = config.getConfig("client", configMode)
-    config_client.update({"online": online})
+    config.setConfigParameter("client", "online", online)
     if not online and server_host:
-        config_client.update({"server": {"host": server_host}})
+        config.setConfigParameter("client", "server.host", server_host)
+
     Client.Main(config=config_client, options=options)
 
 def start_local() -> None:

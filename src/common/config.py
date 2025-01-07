@@ -43,7 +43,10 @@ except Exception as exc:
     print(f"Une erreur s'est produite lors du chargement de la configuration commune : {exc}")
     sys.exit(1)
 
-def getConfig(app, mode):
+app_configs = {}
+
+def initConfig(app, mode):
+    global app_configs
     try:
         config_path = os.path.join(path_all_config, f"{app}.yaml")
         config = openConfig(config_path)
@@ -53,7 +56,7 @@ def getConfig(app, mode):
         if config.get("all"):
             final_config.update(config["all"])
         final_config.update(common_config)
-        return final_config
+        app_configs[app] = final_config
     except KeyError:
         print(f"Erreur : La config '{mode}' n'existe pas dans la configuration pour {app}.")
         sys.exit(1)
@@ -61,5 +64,21 @@ def getConfig(app, mode):
         print(exc)
         sys.exit(1)
     except Exception as exc:
-        print(f"Une erreur inattendue s'est produite lors de l'obtention de la configuration pour {app} : {exc}")
+        print(f"Une erreur inattendue s'est produite lors de l'initialisation de la configuration pour {app} : {exc}")
         sys.exit(1)
+
+def setConfigParameter(app, key, value):
+    if app not in app_configs:
+        initConfig(app, "prod")
+    keys = key.split('.')
+    d = app_configs[app]
+    for k in keys[:-1]:
+        if k not in d or not isinstance(d[k], dict):
+            d[k] = {}
+        d = d[k]
+    d[keys[-1]] = value
+
+def getConfig(app, mode="prod"):
+    if app not in app_configs:
+        initConfig(app, mode)
+    return app_configs[app]
