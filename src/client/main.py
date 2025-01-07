@@ -32,6 +32,7 @@ def Main():
     window, clock = InitPygame()
     changeTitle("Acceuil")
 
+    print(getConfig("client"))
     print(ping())
 
     running = True

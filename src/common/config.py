@@ -70,7 +70,7 @@ def initConfig(app, mode):
 
 def setConfigParameter(app, key, value):
     if app not in app_configs:
-        initConfig(app, "prod")
+        initConfig(app, getMode())
     keys = key.split('.')
     d = app_configs[app]
     for k in keys[:-1]:
