@@ -1,13 +1,13 @@
 import pygame
-from typing import List
-import client.lib.screen.base as Screen
+from typing import List, Type
+from client.lib.screen.base import Screen
 from client.screen.auth import AuthScreen
 from client.screen.testD import TestScreen
 from client.types import EVENTS, KEYS
 
-actualScreen = None
+actualScreen: Screen = None
 
-screens = {
+screens: List[Type[Screen]] = {
     "auth": AuthScreen,
     "test": TestScreen
 }
