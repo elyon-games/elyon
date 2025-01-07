@@ -1,6 +1,7 @@
 import yaml
 import os
 import sys
+from common.utils import getMode
 
 def resource_path(relative_path):
     if hasattr(sys, "_MEIPASS"):
@@ -78,7 +79,7 @@ def setConfigParameter(app, key, value):
         d = d[k]
     d[keys[-1]] = value
 
-def getConfig(app, mode="prod"):
+def getConfig(app):
     if app not in app_configs:
-        initConfig(app, mode)
+        initConfig(app, getMode())
     return app_configs[app]

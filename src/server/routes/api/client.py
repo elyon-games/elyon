@@ -1,10 +1,10 @@
 from flask import Blueprint
-from server.services.config import configData
+from common.config import getConfig
 route_client = Blueprint("client", __name__)
 
 @route_client.route("/info", methods=["GET"])
 def info():
-    print(configData)
+    config = getConfig("server")
     return {
-        "version": configData["version"],
+        "version": config["version"],
     }

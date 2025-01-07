@@ -1,7 +1,9 @@
 from server.database.main import BaseModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from common.time import get_current_time
-from server.services.config import configData as config
+from common.config import getConfig
+
+config = getConfig("server")
 
 class Files(BaseModel):
     def __init__(self):

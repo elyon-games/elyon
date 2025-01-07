@@ -7,9 +7,9 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
-# from client.lib.scrollBar import ScrollBar
 from client.lib.title import changeTitle
-# import common.path as path
+from client.lib.ping import ping
+import common.path as path
 import common.assets as assets
 from client.style.constants import WHITE
 from client.style.fonts import getFont
@@ -31,6 +31,8 @@ def Main():
     ms_per_frame = 10
     window, clock = InitPygame()
     changeTitle("Acceuil")
+
+    print(ping())
 
     running = True
     while running:

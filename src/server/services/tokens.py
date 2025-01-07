@@ -1,7 +1,9 @@
 import jwt
 from datetime import datetime, timedelta, timezone
 from server.database.db import users as User
-from server.services.config import configData
+from common.config import getConfig
+
+configData = getConfig("server")
 
 def create_jwt_token(user_id):
     if not configData:
