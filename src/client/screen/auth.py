@@ -3,7 +3,8 @@ from pygame import gfxdraw
 from client.style.gradient import draw_gradient
 from client.style.constants import EMERAUDE, BLEU, WHITE, BLACK, GRAY
 from client.lib.screen.base import Screen
-from client.types import EVENTS, KEYS, CLOCK
+from client.types import EVENTS, KEYS
+import common.config as config 
 
 class AuthScreen(Screen):
     def __init__(self):
@@ -47,7 +48,7 @@ class AuthScreen(Screen):
         text_rect = text_surface.get_rect(center=rect.center)
         self.surface.blit(text_surface, text_rect)
 
-    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS, options: dict, config: dict, clock: CLOCK):
+    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS):
         # Background
         draw_gradient(self.surface, EMERAUDE, BLEU, self.surface.get_width(), self.surface.get_height())
 
@@ -95,4 +96,4 @@ class AuthScreen(Screen):
                     elif self.active_input == "password":
                         self.password += event.unicode
 
-        super().Update(window, keys, events, options, config, clock)
+        super().Update(window, keys, events)

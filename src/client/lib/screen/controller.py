@@ -3,7 +3,7 @@ from typing import List
 import client.lib.screen.base as Screen
 from client.screen.auth import AuthScreen
 from client.screen.testD import TestScreen
-from client.types import EVENTS, KEYS, CLOCK
+from client.types import EVENTS, KEYS
 
 actualScreen = None
 
@@ -31,11 +31,11 @@ def showScreen(window: pygame.Surface, screen: str) -> Screen:
     
     return actualScreen
 
-def updateScreen(window: pygame.Surface, events: EVENTS, keys: KEYS, options: dict, config: dict, clock: CLOCK):
+def updateScreen(window: pygame.Surface, events: EVENTS, keys: KEYS):
     global actualScreen
     if actualScreen is not None and actualScreen.isMounted:
         for event in events:
             if event.type == pygame.VIDEORESIZE:
                 actualScreen.updateSurface((event.w, event.h))
             actualScreen.HandleEvent(type=event.type, event=event)
-        actualScreen.Update(window=window, keys=keys, events=events, options=options, config=config, clock=clock)
+        actualScreen.Update(window=window, keys=keys, events=events)

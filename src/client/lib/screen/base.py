@@ -1,5 +1,5 @@
 import pygame
-from client.types import EVENTS, KEYS, EVENT, CLOCK
+from client.types import EVENTS, KEYS, EVENT
 class Screen():
     def __init__(self, id):
         self.id = id
@@ -24,7 +24,7 @@ class Screen():
         self.surface = None
         self.isMounted = False
 
-    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS, options: dict, config: dict, clock: CLOCK):
+    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS):
         if self.isMounted:
             self.window = window
             self.window.blit(self.surface, (0, 0), self.surface.get_rect())

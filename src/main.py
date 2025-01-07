@@ -21,7 +21,7 @@ def start_server() -> None:
     data.createServerData()
     import server.main as Server
     config_server = config.getConfig("server", configMode)
-    Server.Main(config=config_server, options=options)
+    Server.Main()
 
 def start_client() -> None:
     global online
@@ -34,7 +34,7 @@ def start_client() -> None:
     if not online and server_host:
         config.setConfigParameter("client", "server.host", server_host)
 
-    Client.Main(config=config_client, options=options)
+    Client.Main()
 
 def start_local() -> None:
     server_thread = threading.Thread(target=start_server, name="ServerThread", daemon=True)

@@ -1,5 +1,7 @@
 import os
 import common.path
+from common.config import getConfig 
+from common.args import getArgs
 from flask import Flask, session, request
 from server.services.sessions import initSessions
 from server.services.tokens import verify_jwt_token
@@ -8,7 +10,9 @@ from server.routes.web.main import route_web
 
 global app
 
-def Main(config, options):
+def Main():
+    config = getConfig("server")
+    options = getArgs()
     global app
     print("Start Server...")
     

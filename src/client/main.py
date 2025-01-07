@@ -1,5 +1,8 @@
 import pygame
 
+from common.config import getConfig
+from common.args import getArgs
+
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
@@ -21,7 +24,9 @@ def InitPygame():
     clock = pygame.time.Clock()
     return window, clock
 
-def Main(config, options):
+def Main():
+    config = getConfig("client")
+    options = getArgs()
     global window, clock, ms_per_frame
     ms_per_frame = 10
     window, clock = InitPygame()
@@ -44,7 +49,7 @@ def Main(config, options):
         elif keys[pygame.K_t]:
             showScreen(window, "test")
 
-        updateScreen(window=window, events=events, keys=keys, options=options, config=config, clock=clock)
+        updateScreen(window=window, events=events, keys=keys)
 
         fps = int(clock.get_fps())
         current_ms_per_frame = clock.get_time()

@@ -20,3 +20,6 @@ def asArg(key):
 
 def getArg(key):
     return return_args[key]
+
+def getArgs():
+    return return_args
