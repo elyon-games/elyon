@@ -24,6 +24,7 @@ def InitPygame():
     clock = pygame.time.Clock()
     return window, clock
 
+
 def Main():
     config = getConfig("client")
     options = getArgs()
@@ -32,9 +33,9 @@ def Main():
     window, clock = InitPygame()
     changeTitle("Acceuil")
 
-    print(getConfig("client"))
-    print(ping())
-
+    if ping().get("version") != config["version"]:
+        raise ValueError("La version du serveur ne correspond pas à celle du client.")
+    
     running = True
     while running:
         events = pygame.event.get()
