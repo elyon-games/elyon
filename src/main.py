@@ -45,7 +45,7 @@ def start_local() -> None:
 
 def load_saved_servers():
     try:
-        with open(f"{path.get_path("data")}/saved_servers.json", "r") as file:
+        with open(f"{path.get_path("client_data")}/servers_private.json", "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return []
@@ -54,7 +54,7 @@ def save_server(ip):
     servers = load_saved_servers()
     if ip not in servers:
         servers.append(ip)
-        with open(f"{path.get_path("data")}/saved_servers.json", "w") as file:
+        with open(f"{path.get_path("client_data")}/servers_private.json", "w") as file:
             json.dump(servers, file)
 
 def ping_server(ip):
