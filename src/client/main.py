@@ -2,6 +2,9 @@ import pygame
 
 from common.config import getConfig
 from common.args import getArgs
+import pygame.docs
+
+import pygame.docs.generated
 
 pygame.init()
 pygame.font.init()
@@ -23,7 +26,6 @@ def InitPygame():
     window = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
     clock = pygame.time.Clock()
     return window, clock
-
 
 def Main():
     config = getConfig("client")
@@ -63,7 +65,6 @@ def Main():
         ms_text = getFont("hud_info").render(f"MSPF : {ms_per_frame}", True, WHITE)
         window.blit(fps_text, (window.get_width() - fps_text.get_width() - 10, 10))
         window.blit(ms_text, (window.get_width() - ms_text.get_width() - 10, 25))
-
         pygame.display.flip()
         clock.tick(120)
 

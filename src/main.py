@@ -11,6 +11,7 @@ import common.assets as assets
 import common.logger as Logger
 import customtkinter as ctk
 import webbrowser
+import json
 
 online = False
 server_host = False
@@ -42,6 +43,27 @@ def start_local() -> None:
     client_thread.join()
     print("Le client a terminé.")
 
+def load_saved_servers():
+    try:
+        with open(f"{path.get_path("data")}/saved_servers.json", "r") as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
+
+def save_server(ip):
+    servers = load_saved_servers()
+    if ip not in servers:
+        servers.append(ip)
+        with open(f"{path.get_path("data")}/saved_servers.json", "w") as file:
+            json.dump(servers, file)
+
+def ping_server(ip):
+    try:
+        res = requests.get(f"http://{ip}/api/client/info", timeout=2)
+        return res.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
 def start_GUI() -> None:
     COLOR_PRIMARY = "#10B981"
     COLOR_SECONDARY = "#2563EB"
@@ -58,20 +80,40 @@ def start_GUI() -> None:
         global server_host, online
         ip = ip_entry.get()
         if ip:
-            try:
-                res = requests.get(f"http://{ip}/api/client/info")
-                if res.status_code == 200:
-                    server_host = ip
-                    online = False
-                    status_label.configure(text="Adresse IP valide!", text_color="green")
-                    ip_entry.pack_forget()
-                    configure_button.configure(text="Se connecter", command=on_start_client)
-                else:
-                    status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
-            except requests.exceptions.RequestException:
-                status_label.configure(text="Erreur de connexion au serveur.", text_color="red")
+            if ping_server(ip):
+                server_host = ip
+                online = False
+                status_label.configure(text="Adresse IP valide!", text_color="green")
+                ip_entry.delete(0, 'end')
+                save_server(ip)
+                update_saved_servers()
+            else:
+                status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
         else:
             status_label.configure(text="Veuillez entrer une adresse IP valide.", text_color="red")
+
+    def on_connect_to_server(ip):
+        global server_host, online
+        if ping_server(ip):
+            server_host = ip
+            online = True
+            app.destroy()
+            start_client()
+        else:
+            status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
+
+    def update_saved_servers():
+        for widget in saved_servers_inner_frame.winfo_children():
+            widget.destroy()
+        servers = load_saved_servers()
+        for server in servers:
+            status = "En ligne" if ping_server(server) else "Hors ligne"
+            server_frame = ctk.CTkFrame(saved_servers_inner_frame, fg_color="white")
+            server_frame.pack(pady=2, fill="x")
+            ctk.CTkLabel(server_frame, text=f"{server} - {status}", fg_color="white").pack(side="left", padx=5)
+            if status == "En ligne":
+                ctk.CTkButton(server_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip),
+                              height=30, width=100, fg_color=COLOR_SECONDARY).pack(side="right", padx=5)
 
     def on_start_client():
         global online
@@ -97,7 +139,7 @@ def start_GUI() -> None:
 
     app = ctk.CTk()
     app.title("Elyon Launcher")
-    app.geometry("400x350")
+    app.geometry("400x500")
     app.iconbitmap(assets.getAsset("/logo/round.ico"))
     app.protocol("WM_DELETE_WINDOW", on_close)
     app.resizable(False, False)
@@ -109,7 +151,7 @@ def start_GUI() -> None:
 
     tab_public = tabview.add("Serveur Public")
     ctk.CTkLabel(tab_public, text="Démarrer un serveur public", font=FONT_TITLE).pack(pady=10)
-    ctk.CTkButton(tab_public, text="lancer", command=on_start_client, font=FONT_TITLE,
+    ctk.CTkButton(tab_public, text="Lancer", command=on_start_client, font=FONT_TITLE,
                   height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).pack(pady=20)
 
     tab_private = tabview.add("Serveur Privé")
@@ -117,11 +159,31 @@ def start_GUI() -> None:
     ip_entry = ctk.CTkEntry(tab_private, placeholder_text="Entrez l'adresse IP du serveur",
                             height=ENTRY_HEIGHT, width=ENTRY_WIDTH)
     ip_entry.pack(pady=2)
-    configure_button = ctk.CTkButton(tab_private, text="Configurer", command=on_configure_server_click,
+    configure_button = ctk.CTkButton(tab_private, text="Ajouter", command=on_configure_server_click,
                                      height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY)
     configure_button.pack(pady=2)
     status_label = ctk.CTkLabel(tab_private, text="")
     status_label.pack(pady=(5, 5))
+
+    saved_servers_frame = ctk.CTkFrame(tab_private, fg_color="white")
+    saved_servers_frame.pack(pady=10, fill="both", expand=True)
+
+    saved_servers_canvas = ctk.CTkCanvas(saved_servers_frame, bg="white")
+    saved_servers_canvas.pack(side="left", fill="both", expand=True)
+
+    scrollbar = ctk.CTkScrollbar(saved_servers_frame, command=saved_servers_canvas.yview)
+    scrollbar.pack(side="right", fill="y")
+
+    saved_servers_canvas.configure(yscrollcommand=scrollbar.set)
+    saved_servers_canvas.bind('<Configure>', lambda e: saved_servers_canvas.configure(scrollregion=saved_servers_canvas.bbox("all")))
+
+    saved_servers_inner_frame = ctk.CTkFrame(saved_servers_canvas, fg_color="white", bg_color="cyan")
+    saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
+
+    update_saved_servers()
+
+    ctk.CTkButton(tab_private, text="Actualiser", command=update_saved_servers,
+                  height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).pack(pady=10)
 
     tab_offline = tabview.add("Mode Offline")
     ctk.CTkLabel(tab_offline, text="Jouer en mode hors ligne", font=FONT_TITLE).pack(pady=10)

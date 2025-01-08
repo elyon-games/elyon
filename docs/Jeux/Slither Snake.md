@@ -1,0 +1,1 @@
+Un skake sur une map en cadriage de 

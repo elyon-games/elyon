@@ -9,7 +9,7 @@ actualScreen: Screen = None
 
 screens: List[Type[Screen]] = {
     "auth": AuthScreen,
-    "test": TestScreen
+    "test": TestScreen,
 }
 
 def UnMountScreen():
