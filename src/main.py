@@ -77,9 +77,7 @@ def ping_server(ip):
     except requests.exceptions.RequestException:
         return False
 
-def start_GUI():
-    
-
+def start_GUI() -> None:
     # Fonction des bouton
     def on_connect_to_official_server():
         global server_host, online
@@ -374,8 +372,46 @@ def start_GUI():
     Offline(tab_offline)
     footer()
 
-    return app
+    app.mainloop()
+
+def Main() -> None:
+    global options, mode, configMode, type, logger, server_host, online
+
+    try:
+        options = args.get_format_args()
+        mode = utils.getMode()
+        configMode = args.getArg("config") if args.asArg("config") else utils.getMode()
+        type = args.getArg("type") if args.asArg("type") else "gui"
+
+        path.initPath(options.get("data-path") if options.get("data-path") else "./data")
+        data.createDataFolder()
+
+        logger = Logger.LoggerManager(path.get_path("logs"))
+        logger(f"Logger start")
+
+        if utils.getDevModeStatus():
+            print(f"Options : {options}")
+        print(f"Mode : {mode}")
+        print(f"Type : {type}")
+        print(f"Config : {configMode}")
+
+        if type == "gui":
+            start_GUI()
+        elif type == "server":
+            start_server()
+        elif type == "client":
+            start_client()
+        elif type == "local":
+            start_local()
+        else:
+            raise ValueError("Type invalide. Veuillez choisir 'server', 'client', 'local' ou 'gui'")
+    except ValueError as e:
+        print(f"Erreur : {e}")
+    except IndexError:
+        print("Erreur : L'argument '--type' doit être suivi d'une valeur (server, client, local, gui)")
+    except Exception as e:
+        print(f"Une erreur imprévue est survenue : {e}")
+        traceback.print_exc()
 
 if __name__ == "__main__":
-    app = start_GUI()
-    app.mainloop()
+    Main()
