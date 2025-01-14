@@ -88,15 +88,15 @@ def start_GUI():
         global server_host, online
         ip = ip_entry.get()
         if ip:
-            if ping_server(ip):
+            # if ping_server(ip):
                 server_host = ip
                 online = False
                 status_label.configure(text="Adresse IP valide!", text_color="green")
                 ip_entry.delete(0, 'end')
                 save_server(ip)
                 update_saved_servers(saved_servers_inner_frame, status_label)
-            else:
-                status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
+            # else:
+            #      status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
         else:
             status_label.configure(text="Veuillez entrer une adresse IP valide.", text_color="red")
 
@@ -114,13 +114,11 @@ def start_GUI():
         for widget in saved_servers_inner_frame.winfo_children():
             widget.destroy()
         servers = load_saved_servers()
-        for server in servers:
+        for i, server in enumerate(servers[::-1]):
             status = "En ligne" if ping_server(server) else "Hors ligne"
-            server_frame = ctk.CTkFrame(saved_servers_inner_frame, fg_color="white")
-            server_frame.grid(pady=2, sticky="ew")
-            ctk.CTkLabel(server_frame, text=f"{server} - {status}", fg_color="white").grid(row=0, column=0, padx=5)
+            ctk.CTkLabel(saved_servers_inner_frame, text=f"{server} - {status}", fg_color="white", text_color="black").grid(row=i, column=0, padx=5)
             if status == "En ligne":
-                ctk.CTkButton(server_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip, status_label),
+                ctk.CTkButton(saved_servers_inner_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip, status_label),
                               height=30, width=100, fg_color=COLOR_SECONDARY).grid(row=0, column=1, padx=5)
 
     def on_start_local():
@@ -226,25 +224,35 @@ def start_GUI():
                 columnspan=3
             )
 
+        for i in range(2):
+            saved_servers_frame.grid_columnconfigure(i, weight=1)
+
         saved_servers_canvas = ctk.CTkCanvas(
             saved_servers_frame, 
             bg="white"
         )
-        saved_servers_canvas.pack()
+        saved_servers_canvas.grid(row=0, column=0, sticky="nsew")
 
         scrollbar = ctk.CTkScrollbar(
             saved_servers_frame, 
             command=saved_servers_canvas.yview
         )
-        scrollbar.pack(side="top", anchor="ne")
+        scrollbar.grid(
+            row=0, 
+            column=1, 
+            sticky="nes"
+        )
 
         saved_servers_canvas.configure(yscrollcommand=scrollbar.set)
-        saved_servers_canvas.bind('<Configure>', lambda e: saved_servers_canvas.configure(scrollregion=saved_servers_canvas.bbox("all")))
+        saved_servers_canvas.bind(
+            '<Configure>', 
+            lambda e: saved_servers_canvas.configure(scrollregion=saved_servers_canvas.bbox("all"))
+            )
 
         saved_servers_inner_frame = ctk.CTkFrame(
-            saved_servers_canvas, 
-            fg_color="white", 
-            bg_color="cyan"
+            saved_servers_canvas,
+            fg_color="white",
+            border_width=0
         )
         saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
 
