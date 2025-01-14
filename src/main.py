@@ -76,6 +76,7 @@ def start_GUI():
     ENTRY_WIDTH = 300
     FOOTER_HEIGHT = 50
 
+    # Fonction des bouton
     def on_connect_to_official_server():
         global server_host, online
         server_host = "play.elyon.younity-mc.fr"
@@ -135,69 +136,205 @@ def start_GUI():
     def open_website():
         webbrowser.open("https://elyon.younity-mc.fr")
 
+
+    # Fonction d'interface graphique
     def Serveur_Officiel(tabview):
-                # Official server tab
-        ctk.CTkLabel(tab_official, text="Se connecter au serveur officiel", font=FONT_TITLE).grid(pady=10, row=0, column=1, sticky="e")
-        ctk.CTkButton(tab_official, text="Se connecter", command=on_connect_to_official_server, font=FONT_TITLE,
-                    height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).grid(pady=20, row=1, column=1, sticky="e")
+        for i in range(3):
+            tabview.grid_columnconfigure(i, weight=1)
+        # Official server tab
+        ctk.CTkLabel(
+            tabview, 
+            text="Se connecter au serveur officiel", 
+            font=FONT_TITLE
+            ).grid(
+                pady=10, 
+                row=0, 
+                column=1
+            )
+        ctk.CTkButton(
+            tab_official, 
+            text="Se connecter", 
+            command=on_connect_to_official_server, 
+            font=FONT_TITLE,
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=20, 
+                row=1, 
+                column=1
+            )
 
     def Serveur_Privat(tabview): 
+        for i in range(3):
+            tabview.grid_columnconfigure(i, weight=1)
+        # Affichage prinipale 
         # Private servers tab
-        ctk.CTkLabel(tab_private, text="Configurer un serveur privé", font=FONT_TITLE).grid(pady=2, row=0, column=0)
-        ip_entry = ctk.CTkEntry(tab_private, placeholder_text="Entrez l'adresse IP du serveur",
-                                height=ENTRY_HEIGHT, width=ENTRY_WIDTH)
-        ip_entry.grid(pady=2, row=1, column=0)
-        configure_button = ctk.CTkButton(tab_private, text="Ajouter", command=lambda : on_configure_server_click(saved_servers_inner_frame, status_label, ip_entry),
-                                        height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY)
-        configure_button.grid(pady=2, row=2, column=0)
-        status_label = ctk.CTkLabel(tab_private, text="")
-        status_label.grid(pady=(5, 5), row=3, column=0)
+        ctk.CTkLabel(
+            tabview, 
+            text="Configurer un serveur privé", 
+            font=FONT_TITLE
+            ).grid(
+                pady=2, 
+                row=0, 
+                column=1
+            )
+        
+        ip_entry = ctk.CTkEntry(
+            tabview, 
+            placeholder_text="Entrez l'adresse IP du serveur",
+            height=ENTRY_HEIGHT, 
+            width=ENTRY_WIDTH
+            )
+        ip_entry.grid(
+                pady=2, 
+                row=1, 
+                column=1
+            )
+        
+        ctk.CTkButton(
+            tabview, 
+            text="Ajouter", 
+            command=lambda: on_configure_server_click(saved_servers_inner_frame, status_label, ip_entry),
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=2, 
+                row=2, 
+                column=1
+            )
+        status_label = ctk.CTkLabel(
+            tabview, 
+            text=""
+            )
+        status_label.grid(
+                pady=(5, 5), 
+                row=3, 
+                column=1
+            )
 
-        saved_servers_frame = ctk.CTkFrame(tab_private, fg_color="white")
-        saved_servers_frame.grid(pady=10, sticky="nsew", row=4, column=0)
+        # Affichage des serveurs sauvegardés
+        saved_servers_frame = ctk.CTkFrame(
+            tabview, 
+            fg_color="white"
+        )
+        saved_servers_frame.grid(
+                pady=10, 
+                row=4, 
+                sticky="ew",
+                columnspan=3
+            )
 
-        saved_servers_frame.grid_rowconfigure(0, weight=1)
-        saved_servers_frame.grid_columnconfigure(0, weight=1)
+        saved_servers_canvas = ctk.CTkCanvas(
+            saved_servers_frame, 
+            bg="white"
+        )
+        saved_servers_canvas.pack()
 
-        saved_servers_canvas = ctk.CTkCanvas(saved_servers_frame, bg="white")
-        saved_servers_canvas.grid(sticky="nsew", row=0, column=0)
-
-        scrollbar = ctk.CTkScrollbar(saved_servers_frame, command=saved_servers_canvas.yview)
-        scrollbar.grid(sticky="ns", row=0, column=1)
+        scrollbar = ctk.CTkScrollbar(
+            saved_servers_frame, 
+            command=saved_servers_canvas.yview
+        )
+        scrollbar.pack(side="top", anchor="ne")
 
         saved_servers_canvas.configure(yscrollcommand=scrollbar.set)
         saved_servers_canvas.bind('<Configure>', lambda e: saved_servers_canvas.configure(scrollregion=saved_servers_canvas.bbox("all")))
 
-        saved_servers_inner_frame = ctk.CTkFrame(saved_servers_canvas, fg_color="white", bg_color="cyan")
+        saved_servers_inner_frame = ctk.CTkFrame(
+            saved_servers_canvas, 
+            fg_color="white", 
+            bg_color="cyan"
+        )
         saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
 
         update_saved_servers(saved_servers_inner_frame, status_label)
 
-        ctk.CTkButton(tab_private, text="Actualiser", command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
-                    height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).grid(pady=10, row=5, column=0)
-
-    app = ctk.CTk()
+        # Retour à la manipulation de l'interface graphique
+        ctk.CTkButton(
+            tabview, 
+            text="Actualiser", 
+            command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=10, 
+                row=5, 
+                column=1
+            )
     
     def Offline(tabview):
+        for i in range(3):
+            tabview.grid_columnconfigure(i, weight=1)
         # Offline mode tab
-        ctk.CTkLabel(tab_offline, text="Jouer en mode hors ligne", font=FONT_TITLE).grid(pady=10, row=0, column=0)
-        ctk.CTkButton(tab_offline, text="Démarrer", command=on_start_local,
-                    height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).grid(pady=20, row=1, column=0)
+        ctk.CTkLabel(
+            tabview, 
+            text="Jouer en mode hors ligne", 
+            font=FONT_TITLE
+            ).grid(
+                pady=10, 
+                row=0, 
+                column=1
+            )
+        ctk.CTkButton(
+            tab_offline, 
+            text="Démarrer", 
+            command=on_start_local,
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=20, 
+                row=1, 
+                column=1
+            )
 
     def footer():
-        footer_frame = ctk.CTkFrame(app, fg_color=COLOR_PRIMARY, height=FOOTER_HEIGHT)
-        footer_frame.grid(sticky="ew", row=2, column=0, columnspan=20)
+        footer_frame = ctk.CTkFrame(
+            app, 
+            fg_color=COLOR_PRIMARY, 
+            height=FOOTER_HEIGHT
+        )
+        footer_frame.grid(
+            sticky="ew", 
+            row=2, 
+            column=0, 
+            columnspan=20
+        )
 
-        footer_frame.grid_columnconfigure(0, weight=1)  # Left side of the footer
-        footer_frame.grid_columnconfigure(1, weight=0)  # Right side of the footer
+        footer_frame.grid_columnconfigure(0, weight=1)
+        footer_frame.grid_columnconfigure(1, weight=0)
 
-        ctk.CTkLabel(footer_frame, text="© 2024 Elyon Games. Tous droits réservés.",
-                    font=FONT_FOOTER, text_color=COLOR_TEXT).grid(padx=5, pady=0, row=0, column=0, sticky="w")
+        ctk.CTkLabel(
+            footer_frame, 
+            text="© 2024 Elyon Games. Tous droits réservés.",
+            font=FONT_FOOTER, 
+            text_color=COLOR_TEXT
+        ).grid(
+            padx=5, 
+            pady=0, 
+            row=0, 
+            column=0, 
+            sticky="w"
+        )
 
-        ctk.CTkButton(footer_frame, text="Site Web", command=open_website,
-                    height=30, width=80, fg_color=COLOR_SECONDARY).grid(padx=5, pady=0, row=0, column=1, sticky="e")
+        ctk.CTkButton(
+            footer_frame, 
+            text="Site Web", 
+            command=open_website,
+            height=30, 
+            width=80, 
+            fg_color=COLOR_SECONDARY
+        ).grid(
+            padx=5, 
+            pady=0, 
+            row=0, 
+            column=1, 
+            sticky="e"
+        )
 
-
+    app = ctk.CTk()
     app.title("Elyon Games Launcher")
     app.geometry("600x500")
     app.iconbitmap(assets.getAsset("/logo/round.ico"))
