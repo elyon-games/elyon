@@ -13,8 +13,21 @@ import customtkinter as ctk
 import webbrowser
 import json
 
+# Varaibles IHM
 online = False
 server_host = False
+
+# Constante de l'interface graphique
+COLOR_PRIMARY = "#10B981"
+COLOR_SECONDARY = "#2563EB"
+COLOR_TEXT = "#2E2E2E"
+FONT_TITLE = ("Arial", 24)
+FONT_FOOTER = ("Arial", 10, "bold")
+BUTTON_HEIGHT = 50
+BUTTON_WIDTH = 200
+ENTRY_HEIGHT = 40
+ENTRY_WIDTH = 300
+FOOTER_HEIGHT = 50
 
 def start_server() -> None:
     if args.asArg("clear-data") and args.getArg("clear-data") in ["server", "all"]:
@@ -65,16 +78,7 @@ def ping_server(ip):
         return False
 
 def start_GUI():
-    COLOR_PRIMARY = "#10B981"
-    COLOR_SECONDARY = "#2563EB"
-    COLOR_TEXT = "#2E2E2E"
-    FONT_TITLE = ("Arial", 24)
-    FONT_FOOTER = ("Arial", 10, "bold")
-    BUTTON_HEIGHT = 50
-    BUTTON_WIDTH = 200
-    ENTRY_HEIGHT = 40
-    ENTRY_WIDTH = 300
-    FOOTER_HEIGHT = 50
+    
 
     # Fonction des bouton
     def on_connect_to_official_server():
@@ -342,6 +346,7 @@ def start_GUI():
             sticky="e"
         )
 
+    # Variables de l'interface graphique
     app = ctk.CTk()
     app.title("Elyon Games Launcher")
     app.geometry("600x500")
@@ -352,7 +357,7 @@ def start_GUI():
 
     ctk.CTkLabel(app, text="Bienvenue sur Elyon Games Launcher", font=("Arial", 28, "bold")).grid(pady=5, row=0, column=0, columnspan=20)
 
-    # Configure main grid for dynamic resizing
+    # Création de la grid principale
     app.grid_rowconfigure(1, weight=1)
     for i in range(20):
         app.grid_columnconfigure(i, weight=1)
@@ -360,17 +365,13 @@ def start_GUI():
     tabview = ctk.CTkTabview(app)
     tabview.grid(sticky="nsew", padx=10, row=1, column=0, columnspan=20)
 
-
     tab_official = tabview.add("Serveur Officiel")
     tab_private = tabview.add("Serveurs Privés")
     tab_offline = tabview.add("Mode Offline")
 
     Serveur_Officiel(tab_official)
-
     Serveur_Privat(tab_private)
-
     Offline(tab_offline)
-
     footer()
 
     return app
