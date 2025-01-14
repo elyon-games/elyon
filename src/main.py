@@ -45,7 +45,7 @@ def start_local() -> None:
 
 def load_saved_servers():
     try:
-        with open(f"{path.get_path("client_data")}/servers_private.json", "r") as file:
+        with open(f"{path.get_path('data')}/saved_servers.json", "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return []
@@ -54,7 +54,7 @@ def save_server(ip):
     servers = load_saved_servers()
     if ip not in servers:
         servers.append(ip)
-        with open(f"{path.get_path("client_data")}/servers_private.json", "w") as file:
+        with open(f"{path.get_path('data')}/saved_servers.json", "w") as file:
             json.dump(servers, file)
 
 def ping_server(ip):
@@ -75,6 +75,13 @@ def start_GUI() -> None:
     ENTRY_HEIGHT = 40
     ENTRY_WIDTH = 300
     FOOTER_HEIGHT = 50
+
+    def on_connect_to_official_server():
+        global server_host, online
+        server_host = "play.elyon.younity-mc.fr"
+        online = True
+        app.destroy()
+        start_client()
 
     def on_configure_server_click():
         global server_host, online
@@ -115,12 +122,6 @@ def start_GUI() -> None:
                 ctk.CTkButton(server_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip),
                               height=30, width=100, fg_color=COLOR_SECONDARY).pack(side="right", padx=5)
 
-    def on_start_client():
-        global online
-        online = True
-        app.destroy()
-        start_client()
-
     def on_start_local():
         global online
         online = False
@@ -131,31 +132,28 @@ def start_GUI() -> None:
         app.destroy()
         sys.exit()
 
-    def open_github():
-        webbrowser.open("https://github.com/elyon-games/")
-
     def open_website():
         webbrowser.open("https://elyon.younity-mc.fr")
 
     app = ctk.CTk()
-    app.title("Elyon Launcher")
+    app.title("Elyon Games Launcher")
     app.geometry("400x500")
     app.iconbitmap(assets.getAsset("/logo/round.ico"))
     app.protocol("WM_DELETE_WINDOW", on_close)
     app.resizable(False, False)
 
-    ctk.CTkLabel(app, text="Bienvenue sur Elyon", font=("Arial", 28, "bold")).pack(pady=5)
+    ctk.CTkLabel(app, text="Bienvenue sur Elyon Games Launcher", font=("Arial", 28, "bold")).pack(pady=5)
 
     tabview = ctk.CTkTabview(app)
     tabview.pack(expand=True, fill="both", padx=10)
 
-    tab_public = tabview.add("Serveur Public")
-    ctk.CTkLabel(tab_public, text="Démarrer un serveur public", font=FONT_TITLE).pack(pady=10)
-    ctk.CTkButton(tab_public, text="Lancer", command=on_start_client, font=FONT_TITLE,
+    tab_official = tabview.add("Serveur Officiel")
+    ctk.CTkLabel(tab_official, text="Se connecter au serveur officiel", font=FONT_TITLE).pack(pady=10)
+    ctk.CTkButton(tab_official, text="Se connecter", command=on_connect_to_official_server, font=FONT_TITLE,
                   height=BUTTON_HEIGHT, width=BUTTON_WIDTH, fg_color=COLOR_PRIMARY).pack(pady=20)
 
-    tab_private = tabview.add("Serveur Privé")
-    ctk.CTkLabel(tab_private, text="Configurer le serveur privé", font=FONT_TITLE).pack(pady=2)
+    tab_private = tabview.add("Serveurs Privés")
+    ctk.CTkLabel(tab_private, text="Configurer un serveur privé", font=FONT_TITLE).pack(pady=2)
     ip_entry = ctk.CTkEntry(tab_private, placeholder_text="Entrez l'adresse IP du serveur",
                             height=ENTRY_HEIGHT, width=ENTRY_WIDTH)
     ip_entry.pack(pady=2)
@@ -194,8 +192,6 @@ def start_GUI() -> None:
     footer_frame.pack(side="bottom", fill="x")
     ctk.CTkLabel(footer_frame, text="© 2024 Elyon Games. Tous droits réservés.",
                  font=FONT_FOOTER, text_color=COLOR_TEXT).pack(side="left", padx=5)
-    ctk.CTkButton(footer_frame, text="GitHub", command=open_github,
-                  height=30, width=80, fg_color=COLOR_SECONDARY).pack(side="right", padx=2, pady=0)
     ctk.CTkButton(footer_frame, text="Site Web", command=open_website,
                   height=30, width=80, fg_color=COLOR_SECONDARY).pack(side="right", padx=2, pady=0)
 

@@ -3,11 +3,11 @@ import common.utils as utils
 import json
 import os.path
 
-def get_table_path(table):
+def get_table_path(table) -> str:
     return os.path.join(path.get_path("server_database"), f"{table}-{utils.getMode()}.json")
 
 class BaseModel:
-    def __init__(self, schema, default_data=[]):
+    def __init__(self, schema: dict, default_data: list=[]):
         self.table = self.__class__.__name__.lower()
         self.db_path = get_table_path(self.table)
         self.schema = schema
@@ -17,11 +17,11 @@ class BaseModel:
             self.initialize_default_data(default_data)
         self.clean_data()
 
-    def save(self):
+    def save(self) -> None:
         with open(self.db_path, 'w') as file:
             json.dump(self.data, file)
 
-    def load(self):
+    def load(self) -> list:
         if os.path.getsize(self.db_path) == 0:
             return []
         with open(self.db_path, 'r') as file:
