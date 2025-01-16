@@ -118,7 +118,7 @@ def start_GUI() -> None:
         servers = load_saved_servers()
         for i, server in enumerate(servers[::-1]):
             status = "En ligne" if ping_server(server) else "Hors ligne"
-            ctk.CTkLabel(saved_servers_inner_frame, text=f"{server} - {status}", fg_color="white", text_color="black").grid(row=i, column=0, padx=5)
+            ctk.CTkLabel(saved_servers_inner_frame, text=f"{server} - {status}", text_color="white").grid(row=i, column=0, padx=5)
             if status == "En ligne":
                 ctk.CTkButton(saved_servers_inner_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip, status_label),
                               height=30, width=100, fg_color=COLOR_SECONDARY).grid(row=0, column=1, padx=5)
@@ -168,7 +168,6 @@ def start_GUI() -> None:
     def Serveur_Privat(tabview): 
         for i in range(3):
             tabview.grid_columnconfigure(i, weight=1)
-        # Affichage prinipale 
         # Private servers tab
         ctk.CTkLabel(
             tabview, 
@@ -191,19 +190,42 @@ def start_GUI() -> None:
                 row=1, 
                 column=1
             )
-        
+        frame_button = ctk.CTkFrame(
+            tabview,
+            border_width=0
+        )
+        frame_button.grid(
+            row=2,
+            column=1
+        )
         ctk.CTkButton(
-            tabview, 
+            frame_button, 
             text="Ajouter", 
             command=lambda: on_configure_server_click(saved_servers_inner_frame, status_label, ip_entry),
             height=BUTTON_HEIGHT, 
             width=BUTTON_WIDTH, 
             fg_color=COLOR_PRIMARY
             ).grid(
-                pady=2, 
-                row=2, 
+                pady=2,
+                padx=2,
+                row=1, 
                 column=1
             )
+        
+        ctk.CTkButton(
+            frame_button, 
+            text="Actualiser", 
+            command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=2,
+                padx=2,
+                row=1, 
+                column=2
+            )
+        
         status_label = ctk.CTkLabel(
             tabview, 
             text=""
@@ -217,7 +239,7 @@ def start_GUI() -> None:
         # Affichage des serveurs sauvegardés
         saved_servers_frame = ctk.CTkFrame(
             tabview, 
-            fg_color="white"
+            border_width=0
         )
         saved_servers_frame.grid(
                 pady=10, 
@@ -230,8 +252,9 @@ def start_GUI() -> None:
             saved_servers_frame.grid_columnconfigure(i, weight=1)
 
         saved_servers_canvas = ctk.CTkCanvas(
-            saved_servers_frame, 
-            bg="white"
+            saved_servers_frame,
+            bg=saved_servers_frame.cget("fg_color")[1],
+            highlightthickness=0
         )
         saved_servers_canvas.grid(row=0, column=0, sticky="nsew")
 
@@ -253,26 +276,12 @@ def start_GUI() -> None:
 
         saved_servers_inner_frame = ctk.CTkFrame(
             saved_servers_canvas,
-            fg_color="white",
-            border_width=0
+            border_width=0,
         )
         saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
 
         update_saved_servers(saved_servers_inner_frame, status_label)
 
-        # Retour à la manipulation de l'interface graphique
-        ctk.CTkButton(
-            tabview, 
-            text="Actualiser", 
-            command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
-            height=BUTTON_HEIGHT, 
-            width=BUTTON_WIDTH, 
-            fg_color=COLOR_PRIMARY
-            ).grid(
-                pady=10, 
-                row=5, 
-                column=1
-            )
     
     def Offline(tabview):
         for i in range(3):
