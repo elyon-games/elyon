@@ -1,10 +1,12 @@
 import sys
-return_args = {}
+from typing import Dict, Optional
 
-def get_format_args():
+return_args: Dict[str, str] = {}
+
+def get_format_args() -> Dict[str, str]:
     global return_args
     args = sys.argv[1:]
-    current_key = None
+    current_key: Optional[str] = None
 
     for arg in args:
         if arg.startswith("--"):
@@ -15,11 +17,11 @@ def get_format_args():
 
     return return_args
 
-def asArg(key):
+def asArg(key: str) -> Optional[str]:
     return return_args.get(key)
 
-def getArg(key):
+def getArg(key: str) -> str:
     return return_args[key]
 
-def getArgs():
+def getArgs() -> Dict[str, str]:
     return return_args

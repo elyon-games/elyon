@@ -1,16 +1,17 @@
 import yaml
 import os
 import sys
+from typing import Any, Dict, Optional
 from common.utils import getMode
 
-def resource_path(relative_path):
+def resource_path(relative_path: str) -> str:
     if hasattr(sys, "_MEIPASS"):
         return os.path.join(sys._MEIPASS, relative_path)
     return os.path.join(os.path.abspath("."), relative_path)
 
-path_all_config = resource_path("config")
+path_all_config: str = resource_path("config")
 
-def openConfig(path):
+def openConfig(path: str) -> Optional[Dict[str, Any]]:
     try:
         with open(path, "r") as file:
             return yaml.safe_load(file)
@@ -24,7 +25,7 @@ def openConfig(path):
         print(f"Une erreur inattendue s'est produite lors de l'ouverture de {path} : {exc}")
         sys.exit(1)
 
-def ensure_config_exists():
+def ensure_config_exists() -> None:
     global path_all_config
     external_config_path = os.path.join(os.path.abspath("."), "config")
     if os.path.exists(external_config_path) and os.path.isdir(external_config_path):
@@ -38,15 +39,15 @@ ensure_config_exists()
 
 try:
     common_config_path = os.path.join(path_all_config, "common.yaml")
-    common_config = openConfig(common_config_path)
+    common_config: Dict[str, Any] = openConfig(common_config_path) or {}
 except Exception as exc:
     common_config = {}
     print(f"Une erreur s'est produite lors du chargement de la configuration commune : {exc}")
     sys.exit(1)
 
-app_configs = {}
+app_configs: Dict[str, Dict[str, Any]] = {}
 
-def initConfig(app, mode):
+def initConfig(app: str, mode: str) -> None:
     global app_configs
     try:
         config_path = os.path.join(path_all_config, f"{app}.yaml")
@@ -68,7 +69,7 @@ def initConfig(app, mode):
         print(f"Une erreur inattendue s'est produite lors de l'initialisation de la configuration pour {app} : {exc}")
         sys.exit(1)
 
-def setConfigParameter(app, key, value):
+def setConfigParameter(app: str, key: str, value: Any) -> None:
     if app not in app_configs:
         initConfig(app, getMode())
     keys = key.split('.')
@@ -79,7 +80,7 @@ def setConfigParameter(app, key, value):
         d = d[k]
     d[keys[-1]] = value
 
-def getConfig(app):
+def getConfig(app: str) -> Dict[str, Any]:
     if app not in app_configs:
         initConfig(app, getMode())
     return app_configs[app]

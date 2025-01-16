@@ -1,12 +1,15 @@
+from typing import Dict
+
 import os.path
 import common.assets
 
 global path_data
 global paths
 
-path_data = None
-paths = {}
-def initPath(path_data_t="./data") -> None:
+path_data: str = None
+paths: Dict[str, str] = {}
+
+def initPath(path_data_t: str = "./data") -> None:
     global path_data
     global paths
     path_data = path_data_t
