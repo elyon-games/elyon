@@ -7,12 +7,12 @@ configData = getConfig("server")
 
 def create_jwt_token(user_id):
     if not configData:
-        raise Exception("Token service non initialisé.")
+        raise Exception("TOKEN_SERVICE_NO_INIT")
     if not user_id:
-        raise Exception("ID utilisateur invalide.")
+        raise Exception("USER_ID_INVALID")
     userData = User.get_by_id(user_id)
     if not userData:
-        raise Exception("Utilisateur non trouvé.")
+        raise Exception("USER_NOFOUND")
     payload = {
         "user_id": userData.get("id"),
         "admin": userData.get("admin", False),
@@ -26,12 +26,12 @@ def create_jwt_token(user_id):
 def verify_jwt_token(token):
     try:
         if not configData:
-            raise Exception("Token service non initialisé.")
+            raise Exception("TOKEN_SERVICE_NO_INIT")
         if not token:
-            raise Exception("Token invalide.")        
+            raise Exception("TOKEN_INVALID")        
         payload = jwt.decode(token, configData["secret"], algorithms="HS256")
         return payload
     except jwt.ExpiredSignatureError:
-        raise Exception("Le token a expiré.")
+        raise Exception("TOKEN_EXPIRED")
     except jwt.InvalidTokenError:
-        raise Exception("Token invalide.")
+        raise Exception("TOKEN_INVALID")

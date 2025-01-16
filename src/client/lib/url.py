@@ -3,6 +3,7 @@ from common.config import getConfig
 
 def join_url(*args: str) -> str:
     host = getConfig("client")["server"]["host"]
+    print(host)
     if not host:
         return None
     return urljoin(f"http://{host}", *args)

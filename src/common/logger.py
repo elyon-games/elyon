@@ -17,15 +17,17 @@ class LoggerWriter:
         pass
 
 class LoggerManager:
-    def __init__(self, log_file_path) -> None:
+    def __init__(self, log_file_path, disabledConsole) -> None:
         log_filename = os.path.join(log_file_path, f"{datetime.now().strftime('%Y_%m_%d_%H')}.log")
+        handlers = [logging.FileHandler(log_filename)]
+        
+        if not disabledConsole:
+            handlers.append(logging.StreamHandler(sys.stdout))
+        
         logging.basicConfig(
             level=logging.DEBUG,
             format="%(asctime)s [%(levelname)s] %(message)s",
-            handlers=[
-                logging.FileHandler(log_filename),
-                logging.StreamHandler(sys.stdout),
-            ]
+            handlers=handlers
         )
         self.logger = logging.getLogger(str("Elyon"))
 
