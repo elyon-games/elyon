@@ -22,7 +22,7 @@ from client.lib.screen.controller import showScreen, updateScreen
 def stopAllProcesses():
     config = getConfig("client")
     pygame.quit()
-    if config["launchType"] == "local":
+    if config["launch"]["type"] == "local":
         if process.get_process("server-web") :
             process.stop_process("server-web")
         if process.get_process("server-clock") :
@@ -89,7 +89,7 @@ def Main():
 
         import tkinter as tk
         from tkinter import messagebox
-        
+
         def show_error_message(message):
             root = tk.Tk()
             root.withdraw()

@@ -41,7 +41,7 @@ def start_server() -> None:
     if args.asArg("clear-data") and args.getArg("clear-data") in ["server", "all"]:
         data.clearServerData()
     data.createServerData()
-    config.setConfigParameter("server", "launchType", type)
+    config.setConfigParameter("server", "launch.type", type)
     import server.main as Server
     process.create_process("server-main", Server.Main).start()
 
@@ -51,11 +51,11 @@ def start_client() -> None:
         data.clearClientData()
     data.createClientData()
     import client.main as Client
-    config.setConfigParameter("client", "launchType", type)
+    config.setConfigParameter("client", "launch.type", type)
     config.setConfigParameter("client", "online", online)
     print(f"Adresse du serveur : {server_host}")
     if server_host:
-        config.setConfigParameter("client", "server_host", server_host)
+        config.setConfigParameter("client", "server.host", server_host)
     process.create_process("client-main", Client.Main).start()
 
 
