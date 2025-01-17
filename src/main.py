@@ -72,13 +72,22 @@ def save_server(ip):
 
 def ping_server(ip):
     try:
-        res = requests.get(f"http://{ip}/api/client/info", timeout=2)
+        res = requests.get(f"http://{ip}/api/client/info")
         return res.status_code == 200
     except requests.exceptions.RequestException:
         return False
 
 def start_GUI() -> None:
     # Fonction des bouton
+    def delete_server(server_to_delete):
+        content :list = load_saved_servers()
+
+        if server_to_delete in content:
+            content.remove(server_to_delete)
+
+            with open(f"{path.get_path('data')}/saved_servers.json", "w") as file:
+                json.dump(content, file)
+
     def on_connect_to_official_server():
         global server_host, online
         server_host = "play.elyon.younity-mc.fr"
@@ -90,15 +99,15 @@ def start_GUI() -> None:
         global server_host, online
         ip = ip_entry.get()
         if ip:
-            # if ping_server(ip):
+            if ping_server(ip):
                 server_host = ip
                 online = False
                 status_label.configure(text="Adresse IP valide!", text_color="green")
                 ip_entry.delete(0, 'end')
                 save_server(ip)
                 update_saved_servers(saved_servers_inner_frame, status_label)
-            # else:
-            #      status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
+            else:
+                 status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
         else:
             status_label.configure(text="Veuillez entrer une adresse IP valide.", text_color="red")
 
@@ -122,6 +131,8 @@ def start_GUI() -> None:
             if status == "En ligne":
                 ctk.CTkButton(saved_servers_inner_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip, status_label),
                               height=30, width=100, fg_color=COLOR_SECONDARY).grid(row=0, column=1, padx=5)
+            ctk.CTkButton(saved_servers_inner_frame, text="Supprimer", command=lambda: delete_server(server) or update_saved_servers(saved_servers_inner_frame, status_label),
+                              height=30, width=100, fg_color=COLOR_SECONDARY).grid(row=0, column=1, padx=5)
 
     def on_start_local():
         global online
@@ -135,7 +146,6 @@ def start_GUI() -> None:
 
     def open_website():
         webbrowser.open("https://elyon.younity-mc.fr")
-
 
     # Fonction d'interface graphique
     def Serveur_Officiel(tabview):
@@ -281,7 +291,6 @@ def start_GUI() -> None:
         saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
 
         update_saved_servers(saved_servers_inner_frame, status_label)
-
     
     def Offline(tabview):
         for i in range(3):
@@ -416,11 +425,11 @@ def Main() -> None:
             raise ValueError("Type invalide. Veuillez choisir 'server', 'client', 'local' ou 'gui'")
     except ValueError as e:
         print(f"Erreur : {e}")
+        traceback.print_exc()
     except IndexError:
         print("Erreur : L'argument '--type' doit être suivi d'une valeur (server, client, local, gui)")
     except Exception as e:
         print(f"Une erreur imprévue est survenue : {e}")
-        traceback.print_exc()
 
 if __name__ == "__main__":
     Main()
