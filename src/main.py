@@ -1,5 +1,4 @@
 import sys
-import threading
 import requests
 import traceback
 import common.process as process
@@ -13,7 +12,7 @@ import common.logger as Logger
 import customtkinter as ctk
 import webbrowser
 import json
-from typing import List, Any, Dict
+from typing import List, Any, Dict, Optional
 
 # Constante de l'interface graphique
 COLOR_PRIMARY = "#10B981"
@@ -60,7 +59,6 @@ def start_client() -> None:
         config.setConfigParameter("client", "server.host", server_host)
     process.create_process("client-main", Client.Main).start()
 
-
 def start_local() -> None:
     start_server()
     process.set_started_callback("server-main", start_client)
@@ -91,8 +89,8 @@ def ping_server(ip: str) -> bool:
 
 def start_GUI() -> None:
 
-    def delete_server(server_to_delete):
-        content :list = load_saved_servers()
+    def delete_server(server_to_delete: str) -> None:
+        content: List[str] = load_saved_servers()
         if server_to_delete in content:
             content.remove(server_to_delete)
             with open(saved_servers_path, "w") as file:
@@ -133,8 +131,7 @@ def start_GUI() -> None:
         else:
             status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
 
-
-    def update_saved_servers(saved_servers_inner_frame, status_label):
+    def update_saved_servers(saved_servers_inner_frame: ctk.CTkFrame, status_label: ctk.CTkLabel) -> None:
         for widget in saved_servers_inner_frame.winfo_children():
             widget.destroy()
         servers = load_saved_servers()
@@ -224,7 +221,6 @@ def start_GUI() -> None:
                 row=1, 
                 column=1
             )
-        
         
         frame_button = ctk.CTkFrame(
             tabview,
@@ -418,7 +414,6 @@ def Main() -> None:
         configMode = args.getArg("config") if args.asArg("config") else utils.getMode()
         type = args.getArg("type") if args.asArg("type") else "gui"
 
-
         path.initPath(options.get("data-path") if options.get("data-path") else "./data")
         data.createDataFolder()
 
@@ -452,6 +447,7 @@ def Main() -> None:
             raise ValueError("Type invalide. Veuillez choisir 'server', 'client', 'local' ou 'gui'")
     except ValueError as e:
         print(f"Erreur : {e}")
+        traceback.print_exc()
     except IndexError:
         print("Erreur : L'argument '--type' doit être suivi d'une valeur (server, client, local, gui)")
     except Exception as e:
