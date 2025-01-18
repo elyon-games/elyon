@@ -1,8 +1,7 @@
 __pycache__
-__main__.spec
-build
-dist
-data
-test.py
-test/*
 main.spec
+build/
+dist/
+data/
+test.py
+test/
