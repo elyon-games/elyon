@@ -1,3 +1,4 @@
+fonctions: list[dict] = []
 class Fonction:
     def __init__(self, id: str, fnc):
         self.id: str = id

@@ -17,3 +17,5 @@ class Gateway:
         for fonction in self.fonctions:
             if fonction["id"] == id:
                 fonction["fonction"](self, )
+                
+gateways: dict[str, Gateway] = {}
