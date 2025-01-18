@@ -37,6 +37,8 @@ type: str = ""
 logger: Logger.LoggerManager
 options: Dict[str, Any]
 
+saved_servers_path: str = ""
+
 def start_server() -> None:
     if args.asArg("clear-data") and args.getArg("clear-data") in ["server", "all"]:
         data.clearServerData()
@@ -68,7 +70,7 @@ def open_website() -> None:
 
 def load_saved_servers() -> List[str]:
     try:
-        with open(f"{path.get_path('data')}/saved_servers.json", "r") as file:
+        with open(saved_servers_path, "r") as file:
             return json.load(file)
     except FileNotFoundError:
         return []
@@ -77,7 +79,7 @@ def save_server(ip: str) -> None:
     servers = load_saved_servers()
     if ip not in servers:
         servers.append(ip)
-        with open(f"{path.get_path('data')}/saved_servers.json", "w") as file:
+        with open(saved_servers_path, "w") as file:
             json.dump(servers, file)
 
 def ping_server(ip: str) -> bool:
@@ -88,6 +90,14 @@ def ping_server(ip: str) -> bool:
         return False
 
 def start_GUI() -> None:
+
+    def delete_server(server_to_delete):
+        content :list = load_saved_servers()
+        if server_to_delete in content:
+            content.remove(server_to_delete)
+            with open(saved_servers_path, "w") as file:
+                json.dump(content, file)
+
     def on_connect_to_official_server() -> None:
         global server_host, online, type
         server_host = "play.elyon.younity-mc.fr"
@@ -123,16 +133,33 @@ def start_GUI() -> None:
         else:
             status_label.configure(text="Le serveur n'est pas accessible.", text_color="red")
 
-    def update_saved_servers(saved_servers_inner_frame: ctk.CTkFrame, status_label: ctk.CTkLabel) -> None:
+
+    def update_saved_servers(saved_servers_inner_frame, status_label):
         for widget in saved_servers_inner_frame.winfo_children():
             widget.destroy()
         servers = load_saved_servers()
         for i, server in enumerate(servers[::-1]):
             status = "En ligne" if ping_server(server) else "Hors ligne"
-            ctk.CTkLabel(saved_servers_inner_frame, text=f"{server} - {status}", fg_color="white", text_color="black").grid(row=i, column=0, padx=5)
+            ctk.CTkLabel(saved_servers_inner_frame, text=f"{server} - {status}", text_color="white").grid(row=i, column=0, padx=5)
+            
             if status == "En ligne":
-                ctk.CTkButton(saved_servers_inner_frame, text="Se connecter", command=lambda ip=server: on_connect_to_server(ip, status_label),
-                              height=30, width=100, fg_color=COLOR_SECONDARY).grid(row=0, column=1, padx=5)
+                ctk.CTkButton(
+                    saved_servers_inner_frame,
+                    text="Se connecter",
+                    command=lambda ip=server: on_connect_to_server(ip, status_label),
+                    height=30,
+                    width=100,
+                    fg_color=COLOR_SECONDARY
+                ).grid(row=i, column=1, padx=5)
+
+            ctk.CTkButton(
+                saved_servers_inner_frame,
+                text="Supprimer",
+                command=lambda: delete_server(server) or update_saved_servers(saved_servers_inner_frame, status_label),
+                height=30,
+                width=100,
+                fg_color=COLOR_SECONDARY
+            ).grid(row=i, column=2, padx=5)
 
     def on_start_local() -> None:
         global online, type
@@ -198,8 +225,19 @@ def start_GUI() -> None:
                 column=1
             )
         
+        
+        frame_button = ctk.CTkFrame(
+            tabview,
+            border_width=0
+        )
+
+        frame_button.grid(
+            row=2,
+            column=1
+        )
+
         ctk.CTkButton(
-            tabview, 
+            frame_button, 
             text="Ajouter", 
             command=lambda: on_configure_server_click(saved_servers_inner_frame, status_label, ip_entry),
             font=FONT_TITLE,
@@ -207,10 +245,27 @@ def start_GUI() -> None:
             width=BUTTON_WIDTH, 
             fg_color=COLOR_PRIMARY
             ).grid(
-                pady=2, 
-                row=2, 
+                pady=2,
+                padx=2,
+                row=1,
                 column=1
             )
+        
+        ctk.CTkButton(
+            frame_button, 
+            text="Actualiser", 
+            font=FONT_TITLE,
+            command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
+            height=BUTTON_HEIGHT, 
+            width=BUTTON_WIDTH, 
+            fg_color=COLOR_PRIMARY
+            ).grid(
+                pady=2,
+                padx=2,
+                row=1,
+                column=2
+            )
+
         status_label = ctk.CTkLabel(
             tabview, 
             text=""
@@ -224,7 +279,7 @@ def start_GUI() -> None:
         # Affichage des serveurs sauvegardés
         saved_servers_frame = ctk.CTkFrame(
             tabview, 
-            fg_color="white"
+            border_width=0
         )
         saved_servers_frame.grid(
                 pady=10, 
@@ -238,7 +293,8 @@ def start_GUI() -> None:
 
         saved_servers_canvas = ctk.CTkCanvas(
             saved_servers_frame, 
-            bg="white"
+            bg=saved_servers_frame.cget("fg_color")[1],
+            highlightthickness=0
         )
         saved_servers_canvas.grid(row=0, column=0, sticky="nsew")
 
@@ -260,26 +316,11 @@ def start_GUI() -> None:
 
         saved_servers_inner_frame = ctk.CTkFrame(
             saved_servers_canvas,
-            fg_color="white",
             border_width=0
         )
         saved_servers_canvas.create_window((0, 0), window=saved_servers_inner_frame, anchor="nw")
 
         update_saved_servers(saved_servers_inner_frame, status_label)
-
-        # Retour à la manipulation de l'interface graphique
-        ctk.CTkButton(
-            tabview, 
-            text="Actualiser", 
-            command=lambda: update_saved_servers(saved_servers_inner_frame, status_label),
-            height=BUTTON_HEIGHT, 
-            width=BUTTON_WIDTH, 
-            fg_color=COLOR_PRIMARY
-            ).grid(
-                pady=10, 
-                row=5, 
-                column=1
-            )
     
     def Offline(tabview: ctk.CTkTabview) -> None:
         for i in range(3):
@@ -369,7 +410,7 @@ def start_GUI() -> None:
     app.mainloop()
 
 def Main() -> None:
-    global options, mode, configMode, type, logger, server_host, online
+    global options, mode, configMode, type, logger, server_host, online, saved_servers_path
 
     try:
         options = args.get_format_args()
@@ -381,6 +422,11 @@ def Main() -> None:
         path.initPath(options.get("data-path") if options.get("data-path") else "./data")
         data.createDataFolder()
 
+        saved_servers_path = utils.joinPath(path.get_path("data"), "saved_servers.json")
+
+        if not utils.file_exists(saved_servers_path):
+            with open(saved_servers_path, "w") as file:
+                json.dump([], file)
 
         disabledConsoleLogger = args.asArg("disable-console-logger") or False
         logger = Logger.LoggerManager(path.get_path("logs"), disabledConsoleLogger)
