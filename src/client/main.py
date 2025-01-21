@@ -3,9 +3,6 @@ import pygame
 import common.process as process
 from common.config import getConfig
 from common.args import getArgs
-import pygame.docs
-
-import pygame.docs.generated
 
 pygame.init()
 pygame.font.init()
@@ -23,12 +20,8 @@ def stopAllProcesses():
     config = getConfig("client")
     pygame.quit()
     if config["launch"]["type"] == "local":
-        if process.get_process("server-web") :
-            process.stop_process("server-web")
-        if process.get_process("server-clock") :
-            process.stop_process("server-clock")
-        if process.get_process("server-main") :
-            process.stop_process("server-main")
+        for proces in process.get_all_processes().values():
+            proces.stop()
 
 def InitPygame():
     icon = pygame.image.load(assets.getAsset("/logo/round.ico"))

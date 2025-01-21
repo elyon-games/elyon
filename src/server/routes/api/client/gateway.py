@@ -20,8 +20,3 @@ def test(userID, sa):
 network.register_fonction("test", test)
 
 from server.services.clock import registerTicked
-
-def test():
-    print("sa")
-
-registerTicked(test, 50)

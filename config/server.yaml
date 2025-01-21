@@ -6,6 +6,11 @@ all:
 
 dev:
   debug: false
+  web: 
+    # mode: "native"
+    mode: "optimized"
+  clock:
+    tick_rate: 50
   secret: "Zn36aEDySypAqPLfp4QXVHGfC_PMXbVKkZ1P_2xjfrJRUtLavr"
   admin:
     email: "elyon@younity-mc.fr"
@@ -13,6 +18,10 @@ dev:
 
 prod:
   debug: false
+  web: 
+    mode: "optimized"
+  clock:
+    tick_rate: 50
   secret: "aDhX0RjDo-9oqXcvvOr_l1fKawZN2NPYTzA0BNXcS1HXVTSqK6"
   admin:
     email: "elyon@younity-mc.fr"

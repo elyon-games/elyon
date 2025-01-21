@@ -60,10 +60,12 @@ def start_all_processes() -> None:
         process[id].start()
 
 def stop_all_processes() -> None:
+    print("Stopping all processes")
     for id in process:
         process[id].stop()
 
 def stop_process(id: int) -> None:
+    print("stopping process")
     if id not in process:
         raise ValueError("PROCESS_INVALID_ID")
     process[id].stop()
@@ -112,7 +114,7 @@ def stopped_callback_all() -> None:
 def get_process_running_status(id: int) -> bool:
     if id not in process:
         raise ValueError("PROCESS_INVALID_ID")
-    return process[id].is_stopped()
+    return not process[id].is_stopped()
 
 def get_process_running_event(id: int) -> threading.Event:
     if id not in process:

@@ -1,10 +1,12 @@
 import os
+import traceback
 import signal
 import common.path
 import common.process as process
 from common.config import getConfig 
 from common.args import getArgs
 import server.services.clock as clock
+import server.services.cmd.main as cmd
 from flask import Flask, session, request, jsonify, Response
 from werkzeug.exceptions import HTTPException
 from server.services.sessions import initSessions
@@ -15,65 +17,90 @@ from server.routes.web.main import route_web
 app: Flask = None 
 
 def Main():
-    config = getConfig("server")
-    options = getArgs()
-    global app
-    global threads
-    print("Start Server...")
-    
-    app = Flask(
-        f"Elyon Server ({__name__})",
-        static_folder=common.path.get_path("server_public"),
-        static_url_path="/",
-        template_folder=common.path.get_path("server_templates")
-    )
-    
-    @app.errorhandler(404)
-    def page_not_found(error):
-        return jsonify({
-            "error": True,
-            "message": "NO_FOUND",
-            "code": 404
-        }), 404
+    try :
+        config = getConfig("server")
+        options = getArgs()
+        global app
+        print("Start Server...")
+        
+        app = Flask(
+            f"Elyon Server ({__name__})",
+            static_folder=common.path.get_path("server_public"),
+            static_url_path="/",
+            template_folder=common.path.get_path("server_templates"),
+        )
+        
+        @app.errorhandler(404)
+        def page_not_found(error):
+            return jsonify({
+                "error": True,
+                "message": "NO_FOUND",
+                "code": 404
+            }), 404
 
-    @app.errorhandler(Exception)
-    def error_handler(error: Exception) -> tuple[Response, int]:
-        error = str(error)
-        return jsonify({
-            "error": True,
-            "message": error if error else "Erreur interne du serveur (LOGIQUE)",
-            "code": 500
-        }), 500
+        @app.errorhandler(Exception)
+        def error_handler(error: Exception) -> tuple[Response, int]:
+            error = str(error)
+            return jsonify({
+                "error": True,
+                "message": error if error else "Erreur interne du serveur (LOGIQUE)",
+                "code": 500
+            }), 500
 
-    @app.errorhandler(500)
-    def error_handler(error: HTTPException) -> tuple[Response, int]:
-        return jsonify({
-            "error": True,
-            "message": "Erreur interne du serveur (WEB)",
-            "code": 500
-        }), 500
+        @app.errorhandler(500)
+        def error_handler(error: HTTPException) -> tuple[Response, int]:
+            return jsonify({
+                "error": True,
+                "message": "Erreur interne du serveur (WEB)",
+                "code": 500
+            }), 500
 
-    initSessions(app=app)
-    initRoute()
+        initSessions(app=app)
+        initRoute()
 
-    all_files = [
-        os.path.join(root, f)
-        for root, dirs, files in os.walk(common.path.get_path("src"))
-        for f in files
-        if common.path.get_path("data") not in root
-    ]
+        all_files = [
+            os.path.join(root, f)
+            for root, dirs, files in os.walk(common.path.get_path("src"))
+            for f in files
+            if common.path.get_path("data") not in root
+        ]
 
+        def start_server_web():
+            if config["web"]["mode"] == "optimized": 
+                from waitress import serve
+                serve(app=app,
+                    host=config["host"],
+                    port=config["port"]
+                )
+            elif config["web"]["mode"] == "native":
+                app.run(
+                    host=config["host"],
+                    port=config["port"],
+                    debug=config["debug"],
+                    extra_files=all_files,
+                    threaded=True
+                )
 
-    process.create_process("server-web", run=lambda: app.run(host=config["host"], port=config["port"], debug=config["debug"], extra_files=all_files, threaded=False)).start()
+        process.create_process("server-web", run=start_server_web).start()
 
-    process.create_process("server-clock", run=lambda: clock.initClock()).start()
+        process.create_process("server-clock", run=clock.initClock).start()
 
-    process.started_callback("server-main")
+        process.create_process("server-cli", run=cmd.initCMD).start()
 
-    event_stop = process.get_process_running_event("server-web")
-    event_stop.wait()
-    # ajouter la gestions stop server
-    os.kill(os.getpid(), signal.SIGINT)
+        process.started_callback("server-main")
+
+        print("Server started")
+        print("Bienvenue sur la console server de Elyon Games")
+        print("DON'T STOP WITH CTRL+C USE THE COMMAND 'stop'")
+
+        event_stop = process.get_process_running_event("server-web")
+        event_stop.wait()
+        os.kill(os.getpid(), signal.SIGINT)
+
+    except Exception as e:
+        print("Error Fatal in Main Server : ")
+        print(e)
+        traceback.print_exc()
 
 def initRoute():
     global app

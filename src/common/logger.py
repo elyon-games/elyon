@@ -2,6 +2,8 @@ import os.path
 import logging
 import sys
 from datetime import datetime
+import inspect
+from common.utils import getDevModeStatus
 
 class LoggerWriter:
     def __init__(self, logger, log_level):
@@ -11,7 +13,13 @@ class LoggerWriter:
 
     def write(self, message):
         if message.strip():
-            self.logger.log(self.log_level, message.strip())
+            # Récupère la frame de l'appelant (2 niveaux au-dessus)
+            frame = inspect.currentframe().f_back.f_back
+            filename = frame.f_code.co_filename
+            lineno = frame.f_lineno
+
+            # Ajoute le fichier et la ligne au message logué
+            self.logger.log(self.log_level, f"[{filename}:{lineno}] {message.strip()}")
 
     def flush(self):
         pass
@@ -24,9 +32,14 @@ class LoggerManager:
         if not disabledConsole:
             handlers.append(logging.StreamHandler(sys.stdout))
         
+        if not getDevModeStatus():
+            log_format = "%(asctime)s [%(levelname)s] %(message)s"
+        else:
+            log_format = "%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s"
+
         logging.basicConfig(
             level=logging.DEBUG,
-            format="%(asctime)s [%(levelname)s] %(message)s",
+            format=log_format,
             handlers=handlers
         )
         self.logger = logging.getLogger(str("Elyon"))

@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Idées.md",
+                "file": "Scripts.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Idées"
+              "title": "Scripts"
             }
           },
           {
@@ -207,8 +207,10 @@
   },
   "active": "653cb9553c2833bf",
   "lastOpenFiles": [
-    "Jeux/Slither Snake.md",
+    "Structure.md",
+    "Démarrage.md",
     "Idées.md",
+    "Jeux/Slither Snake.md",
     "Jeux/Pong.md",
     "Jeux/Duels Tank.md",
     "Jeux/Nombre mystère.md",
@@ -217,10 +219,8 @@
     "Jeux/Morpoin.md",
     "Jeux/Tank Wars.md",
     "Jeux",
-    "Structure.md",
     "Scripts.md",
     "Config.md",
-    "Démarrage.md",
     "data/server/sessions/tmpog4znfy0.__wz_cache",
     "data/server/sessions/tmpwwc5e7as.__wz_cache",
     "data/server/sessions/tmplbsyvrrx.__wz_cache",
