@@ -66,7 +66,7 @@ def Main():
         ]
 
         def start_server_web():
-            if config["web"]["mode"] == "optimized": 
+            if config["web"]["mode"] == "optimized":
                 from waitress import serve
                 serve(app=app,
                     host=config["host"],
