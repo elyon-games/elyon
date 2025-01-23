@@ -40,9 +40,11 @@ def initCMD():
                 if help_command in comandes:
                     commandData = comandes[help_command]
                     print(f"Description: {commandData.getDescription()}")
-                    print("Parameters:")
-                    for param in commandData.getParameters():
-                        print(f"  {param}")
+                    parameters = commandData.getParameters()
+                    if len(parameters) > 0:
+                        print("Arguments:")
+                        for param in parameters:
+                            print(f"  {param}")
                 else:
                     print(f"Command '{help_command}' not found.")
         elif commandMain in comandes:
@@ -63,7 +65,7 @@ def initCMD():
         else:
             similar_commands = difflib.get_close_matches(command, comandes.keys())
             if similar_commands:
-                print(f"Command introuvable. Voulez-vous dire : {', '.join(similar_commands)} ?")
+                print(f"Commande introuvable. Voulez-vous dire : {', '.join(similar_commands)} ?")
             else:
-                print("Command introuvable")
+                print("Commande introuvable")
     print("Stop CLI")
