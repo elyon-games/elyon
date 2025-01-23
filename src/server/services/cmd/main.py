@@ -7,6 +7,8 @@ comandes: Dict[str, classCMD] = {}
 
 from server.cmd.stop import stopCMD
 comandes["stop"] = stopCMD()
+from server.cmd.tps import tpsCMD
+comandes["tps"] = tpsCMD()
 
 def getCommandMain(command: str):
     return command.split(" ")[0]
