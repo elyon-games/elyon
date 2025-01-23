@@ -114,3 +114,5 @@ class BaseModel:
         self.save()
         return record
     
+    def len_data(self):
+        return len(self.data)

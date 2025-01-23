@@ -9,6 +9,8 @@ from server.cmd.stop import stopCMD
 comandes["stop"] = stopCMD()
 from server.cmd.tps import tpsCMD
 comandes["tps"] = tpsCMD()
+from server.cmd.users_num import users_num
+comandes["users:num"] = users_num()
 
 def getCommandMain(command: str):
     return command.split(" ")[0]
