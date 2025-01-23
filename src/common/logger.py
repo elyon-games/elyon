@@ -3,64 +3,54 @@ import logging
 import sys
 from datetime import datetime
 import inspect
-from common.utils import getDevModeStatus
+from common.config import common_config
+from typing import Optional
+
+logger: Optional[logging.Logger] = None
+
+messageIgnore = ["^", " ", ":", "~"]
+
+def setup_logger(log_file_path: str, disabled_console: bool) -> logging.Logger:
+    global logger
+    log_filename = os.path.join(log_file_path, f"{datetime.now().strftime('%Y_%m_%d_%H')}.log")
+    handlers = [logging.FileHandler(log_filename)]
+    
+    if not disabled_console:
+        handlers.append(logging.StreamHandler(sys.stdout))
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s" if common_config["ultraDebug"] else "%(asctime)s [%(levelname)s] %(message)s",
+        handlers=handlers
+    )
+    logger = logging.getLogger("elyon")
+
+    sys.stdout = LoggerWriter(logger, logging.INFO)
+    sys.stderr = LoggerWriter(logger, logging.ERROR)
+    
+    return logger
+
+def getLogger() -> logging.Logger:
+    if logger is None:
+        raise Exception("Logger is not initialized")
+    return logger
 
 class LoggerWriter:
-    def __init__(self, logger, log_level):
+    def __init__(self, logger: logging.Logger, log_level: int) -> None:
         self.logger = logger
         self.log_level = log_level
         self.buffer = ""
 
-    def write(self, message):
-        if message.strip():
-            # Récupère la frame de l'appelant (2 niveaux au-dessus)
+    def write(self, *messages: str) -> None:
+        combined_message = " ".join(messages).strip()
+        if combined_message and not combined_message in messageIgnore:
             frame = inspect.currentframe().f_back.f_back
             filename = frame.f_code.co_filename
             lineno = frame.f_lineno
+            if common_config["ultraDebug"]:
+                self.logger.log(self.log_level, f"[{filename}:{lineno}] {combined_message}")
+            else:
+                self.logger.log(self.log_level, combined_message)
 
-            # Ajoute le fichier et la ligne au message logué
-            self.logger.log(self.log_level, f"[{filename}:{lineno}] {message.strip()}")
-
-    def flush(self):
+    def flush(self) -> None:
         pass
-
-class LoggerManager:
-    def __init__(self, log_file_path, disabledConsole) -> None:
-        log_filename = os.path.join(log_file_path, f"{datetime.now().strftime('%Y_%m_%d_%H')}.log")
-        handlers = [logging.FileHandler(log_filename)]
-        
-        if not disabledConsole:
-            handlers.append(logging.StreamHandler(sys.stdout))
-        
-        if not getDevModeStatus():
-            log_format = "%(asctime)s [%(levelname)s] %(message)s"
-        else:
-            log_format = "%(asctime)s [%(levelname)s] [%(filename)s:%(lineno)d] %(message)s"
-
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format=log_format,
-            handlers=handlers
-        )
-        self.logger = logging.getLogger(str("Elyon"))
-
-        sys.stdout = LoggerWriter(self.logger, logging.INFO)
-        sys.stderr = LoggerWriter(self.logger, logging.ERROR)
-    
-    def __call__(self, message):
-        self.logger.info(message)
-
-    def error(self, message):
-        self.logger.error(message)
-    
-    def warning(self, message):
-        self.logger.warning(message)
-    
-    def debug(self, message):
-        self.logger.debug(message)
-    
-    def critical(self, message):
-        self.logger.critical(message)
-    
-    def exception(self, message):
-        self.logger.exception(message)

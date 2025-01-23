@@ -8,7 +8,8 @@ import common.args as args
 import common.path as path
 import common.data as data
 import common.assets as assets
-import common.logger as Logger
+from common.logger import setup_logger
+import logging
 import customtkinter as ctk
 import webbrowser
 import json
@@ -27,13 +28,13 @@ ENTRY_WIDTH = 300
 FOOTER_HEIGHT = 50
 
 # Variables globales
-global server_host, online, mode, configMode, type, logger, options
+global server_host, online, mode, configMode, type, options, logger, saved_servers_path
 online: bool = False
+logger: Optional[logging.Logger] = None
 server_host: str = "127.0.0.3:3300"
 mode: str = ""
 configMode: str = ""
 type: str = ""
-logger: Logger.LoggerManager
 options: Dict[str, Any]
 
 saved_servers_path: str = ""
@@ -424,8 +425,8 @@ def Main() -> None:
                 json.dump([], file)
 
         disabledConsoleLogger = args.asArg("disable-console-logger") or False
-        logger = Logger.LoggerManager(path.get_path("logs"), disabledConsoleLogger)
-        logger(f"Logger start")
+        logger = setup_logger(path.get_path("logs"), disabledConsoleLogger)
+        logger.info(f"Logger Start")
 
         if utils.getDevModeStatus():
             print(f"Options : {options}")
