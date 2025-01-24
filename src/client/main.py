@@ -63,11 +63,14 @@ def Main():
         setConfigParameter("client", "computer_id", computer_id)
         config = getConfig("client")
 
-        changeTitle("Acceuil")
+        changeTitle("Chargement...")
 
         pingData = ping()
         if pingData.get("version") != config["version"]:
             raise ValueError("La version du serveur ne correspond pas à celle du client.")
+        
+        if pingData.get("key") is None:
+            raise ValueError("Le serveur n'a pas renvoyé de clé.")
         
         serverKey = pingData.get("key")
         serverLocalID = hashlib.md5(f"{serverKey}{config['server']['host']}".encode('utf-8')).hexdigest()
