@@ -142,4 +142,4 @@ if __name__ == '__main__':
     print("---------------------------------")
     if API_LOG_FILE:
         fileAPI.write(f"# [API] Serveur API démarré à l'adresse http://{SERVER_HOST}:5555 [{datetime.datetime.now()}]\n")
-    app.run(debug=False, port=5555, host=SERVER_HOST)  # Lance le serveur Flask sur le port 5555 et l'adresse SERVER_HOST
+    app.run(debug=False, port=5555, host="0.0.0.0")  # Lance le serveur Flask sur le port 5555 et l'adresse SERVER_HOST
