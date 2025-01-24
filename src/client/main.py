@@ -21,6 +21,7 @@ import common.assets as assets
 from client.style.constants import WHITE
 from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
+from client.lib.keys.controler import updateKeys
 from client.lib.storage.file import File
 import hashlib
 
@@ -82,6 +83,8 @@ def Main():
 
         process.started_callback("client-main")
 
+        import client.lib.keys.controler as controler
+
         running = True
         while running:
             events = pygame.event.get()
@@ -93,14 +96,8 @@ def Main():
 
             window.fill((0, 0, 0))
 
-            keys = pygame.key.get_pressed()
-
-            # if keys[pygame.K_a]:
-            #     showScreen(window, "auth")
-            # elif keys[pygame.K_t]:
-            #     showScreen(window, "test")
-
-            updateScreen(window=window, events=events, keys=keys)
+            updateKeys()
+            updateScreen(window=window, events=events, keys=pygame.key.get_pressed())
 
             fps = int(clock.get_fps())
             current_ms_per_frame = clock.get_time()
