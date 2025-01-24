@@ -1,6 +1,6 @@
 import jwt
 from datetime import datetime, timedelta, timezone
-from server.database.db import users as User
+from server.services.database.db import users as User
 from common.config import getConfig
 
 configData = getConfig("server")

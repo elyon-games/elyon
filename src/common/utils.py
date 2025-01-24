@@ -2,9 +2,9 @@ import os
 import sys
 import re
 
-def create_file_if_not_exists(key: str, default: str) -> None:
-    if not os.path.exists(key):
-        with open(key, 'w') as file:
+def create_file_if_not_exists(pathR: str, default: str) -> None:
+    if not os.path.exists(pathR):
+        with open(pathR, 'w') as file:
             file.write(default)
 
 def create_folder_if_not_exists(folder: str) -> None:

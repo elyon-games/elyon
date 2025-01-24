@@ -8,6 +8,7 @@ def info():
     config = getConfig("server")
     return {
         "version": config["version"],
+        "key": config["key"]
     }
 
 route_client.register_blueprint(route_client_gateway, url_prefix="/gateway")

@@ -418,9 +418,10 @@ def Main() -> None:
         path.initPath(options.get("data-path") if options.get("data-path") else "./data")
         data.createDataFolder()
 
-        saved_servers_path = utils.joinPath(path.get_path("data"), "saved_servers.json")
+        saved_servers_path = utils.joinPath(path.get_path("client_data"), "saved_servers.json")
 
         if not utils.file_exists(saved_servers_path):
+            data.createClientData()
             with open(saved_servers_path, "w") as file:
                 json.dump([], file)
 

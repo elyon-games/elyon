@@ -1,4 +1,4 @@
-from server.database.models import Users, Badges, ActivitySessions, Files
+from server.services.database.models import Users, Badges, ActivitySessions, Files
 
 users = Users()
 badges = Badges()

@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, request
-from server.database.db import users as User
+from server.services.database.db import users as User
 from server.middleware.auth import login_required
 
 route_users = Blueprint("users", __name__)

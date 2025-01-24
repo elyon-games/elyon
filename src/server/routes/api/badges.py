@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint
-from server.database.db import badges as Badges
+from server.services.database.db import badges as Badges
 
 route_badges = Blueprint("badges", __name__)
 

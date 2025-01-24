@@ -3,11 +3,13 @@ from typing import List, Type
 from client.lib.screen.base import Screen
 from client.screen.auth import AuthScreen
 from client.screen.testD import TestScreen
+from client.screen.home import HomeScreen
 from client.types import EVENTS, KEYS
 
 actualScreen: Screen = None
 
 screens: List[Type[Screen]] = {
+    "home": HomeScreen,
     "auth": AuthScreen,
     "test": TestScreen,
 }

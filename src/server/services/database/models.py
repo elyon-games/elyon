@@ -1,4 +1,4 @@
-from server.database.main import BaseModel
+from server.services.database.main import BaseModel
 from werkzeug.security import generate_password_hash, check_password_hash
 from common.time import get_current_time
 from common.config import getConfig

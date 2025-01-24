@@ -1,8 +1,14 @@
+import traceback
+import json
+import os
+import sys
 import pygame
 
 import common.process as process
-from common.config import getConfig
+from common.config import getConfig, setConfigParameter
+from common.random import generate_random_uuid
 from common.args import getArgs
+from common.utils import joinPath
 
 pygame.init()
 pygame.font.init()
@@ -15,6 +21,8 @@ import common.assets as assets
 from client.style.constants import WHITE
 from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
+from client.lib.storage.file import File
+import hashlib
 
 def stopAllProcesses():
     config = getConfig("client")
@@ -39,11 +47,32 @@ def Main():
         global window, clock, ms_per_frame
         ms_per_frame = 10
         window, clock = InitPygame()
+
+        client_data_path = path.get_path("client_data")
+
+        commonStorage = File("common", client_data_path)
+        computer_id: str = ""
+        if "computer_id" not in commonStorage.getData():
+            computer_id = generate_random_uuid()
+            print(f"Computer ID : {computer_id}")
+            commonStorage.addData("computer_id", computer_id)
+            commonStorage.saveData()
+        else:
+            computer_id = commonStorage.getData()["computer_id"]
+        setConfigParameter("client", "computer_id", computer_id)
+        config = getConfig("client")
+
         changeTitle("Acceuil")
 
-        if ping().get("version") != config["version"]:
+        pingData = ping()
+        if pingData.get("version") != config["version"]:
             raise ValueError("La version du serveur ne correspond pas à celle du client.")
         
+        serverKey = pingData.get("key")
+        serverLocalID = hashlib.md5(f"{serverKey}{config['server']['host']}".encode('utf-8')).hexdigest()
+
+        # serverStorage = createStorage(f"server-{serverLocalID}", json.dumps({}))
+
         process.started_callback("client-main")
 
         running = True
@@ -58,10 +87,11 @@ def Main():
             window.fill((0, 0, 0))
 
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_a]:
-                showScreen(window, "auth")
-            elif keys[pygame.K_t]:
-                showScreen(window, "test")
+
+            # if keys[pygame.K_a]:
+            #     showScreen(window, "auth")
+            # elif keys[pygame.K_t]:
+            #     showScreen(window, "test")
 
             updateScreen(window=window, events=events, keys=keys)
 
@@ -69,25 +99,31 @@ def Main():
             current_ms_per_frame = clock.get_time()
             if abs(current_ms_per_frame - ms_per_frame) >= 5:
                 ms_per_frame = current_ms_per_frame
+
+            computer_id_text = getFont("hud_info").render(f"CLIENT : {computer_id.split('-')[0]}", True, WHITE)
+            window.blit(computer_id_text, (window.get_width() - computer_id_text.get_width() - 10, 10))
+
             fps_text = getFont("hud_info").render(f"FPS : {fps}", True, WHITE)
             ms_text = getFont("hud_info").render(f"MSPF : {ms_per_frame}", True, WHITE)
-            window.blit(fps_text, (window.get_width() - fps_text.get_width() - 10, 10))
-            window.blit(ms_text, (window.get_width() - ms_text.get_width() - 10, 25))
+            window.blit(fps_text, (window.get_width() - fps_text.get_width() - 10, 25))
+            window.blit(ms_text, (window.get_width() - ms_text.get_width() - 10, 40))
+
             pygame.display.flip()
             clock.tick(100)
 
         stopAllProcesses()
 
     except Exception as exc:
-
         import tkinter as tk
         from tkinter import messagebox
 
-        def show_error_message(message):
+        def show_error_message(message, detail):
             root = tk.Tk()
             root.withdraw()
-            messagebox.showerror("Erreur", message)
+            messagebox.showerror("Erreur", message, detail=detail)
             root.destroy()
 
-        show_error_message(f"Une erreur s'est produite : {exc}")
+        error_message = f"Une erreur s'est produite : {exc}"
+        error_detail = traceback.format_exc()
+        show_error_message(error_message, error_detail)
         stopAllProcesses()

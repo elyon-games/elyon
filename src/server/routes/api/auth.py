@@ -1,5 +1,5 @@
 from flask import request, jsonify, Blueprint
-from server.database.db import users as Users
+from server.services.database.db import users as Users
 from server.services.tokens import create_jwt_token
 from server.middleware.auth import login_required
 

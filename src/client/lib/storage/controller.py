@@ -6,11 +6,11 @@ clientDataPath = get_path("client_data")
 
 storages: dict[str, File] = {}
 
-def createStorage(id, default) -> str:
+def createStorage(id, default) -> File:
     if id not in storages:
         storages[id] = File(id)
         storages[id].Init(clientDataPath, default)
-    return id
+    return storages[id]
 
 def getStorage(id) -> Optional[File]:
     if id in storages:

@@ -1,4 +1,4 @@
-from server.database.db import users as User
+from server.services.database.db import users as User
 from server.services.cmd.main import classCMD
 
 class users_num(classCMD):

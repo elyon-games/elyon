@@ -3,7 +3,7 @@ import traceback
 import signal
 import common.path
 import common.process as process
-from common.config import getConfig 
+from common.config import getConfig, setConfigParameter
 from common.args import getArgs
 import server.services.clock as clock
 import server.services.cmd.main as cmd
@@ -13,15 +13,22 @@ from server.services.sessions import initSessions
 from server.services.tokens import verify_jwt_token
 from server.routes.api.main import route_api
 from server.routes.web.main import route_web
+import server.services.storage.main as storage
+import common.random 
 
 app: Flask = None 
 
 def Main():
     try :
-        config = getConfig("server")
-        options = getArgs()
         global app
         print("Start Server...")
+        
+        storage.initStorage()
+        if not storage.hasKey("key"):
+            storage.setValue("key", common.random.generate_random_uuid())
+        setConfigParameter("server", "key", storage.getValue("key"))
+
+        config = getConfig("server")
         
         app = Flask(
             f"Elyon Server ({__name__})",
