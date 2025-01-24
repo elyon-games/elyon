@@ -1,7 +1,7 @@
 from typing import Dict
 
-import os.path
 import common.assets
+from common.utils import joinPath
 
 global path_data
 global paths
@@ -24,19 +24,20 @@ def initPath(path_data_t: str = "./data") -> None:
         "config": "./config",
         "assets": common.assets.getAsset("./assets"),
         # logs
-        "logs": os.path.join(path_data, "logs"),
+        "logs": joinPath(path_data, "logs"),
         # client
         "client": "./src/client",
-        "client_data": os.path.join(path_data, "client"),
+        "client_data": joinPath(path_data, "client"),
+        "client_data_servers": joinPath(path_data, "client", "servers"),
         # server
         "server": "./src/server",
         "server_public": "./src/server/public",
         "server_templates": "./src/server/templates",
-        "server_data": os.path.join(path_data, "server"),
-        "server_database": os.path.join(path_data, "server/database"),
-        "server_files": os.path.join(path_data, "server/files"),
-        "server_sessions": os.path.join(path_data, "server/sessions")
+        "server_data": joinPath(path_data, "server"),
+        "server_database": joinPath(path_data, "server/database"),
+        "server_files": joinPath(path_data, "server/files"),
+        "server_sessions": joinPath(path_data, "server/sessions")
     }
     
 def get_path(key: str = "default") -> str:
-    return os.path.abspath(paths.get(key, "./"))
+    return joinPath(paths.get(key, "./"))

@@ -32,6 +32,7 @@ class File:
         return os.path.exists(self.path)
 
     def saveData(self) -> None:
+        utils.create_file_if_not_exists(self.path)
         with open(self.path, "w") as file:
             json.dump(self.data, file)
 

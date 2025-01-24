@@ -1,8 +1,12 @@
 import os
 import sys
 import re
+import json
 
-def create_file_if_not_exists(pathR: str, default: str) -> None:
+def create_file_if_not_exists(pathR: str, default: str = json.dumps({})) -> None:
+    folder = os.path.dirname(pathR)
+    if not os.path.exists(folder):
+        os.makedirs(folder)
     if not os.path.exists(pathR):
         with open(pathR, 'w') as file:
             file.write(default)

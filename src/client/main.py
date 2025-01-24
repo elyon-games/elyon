@@ -49,6 +49,7 @@ def Main():
         window, clock = InitPygame()
 
         client_data_path = path.get_path("client_data")
+        client_data_servers_path = path.get_path("client_data_servers")
 
         commonStorage = File("common", client_data_path)
         computer_id: str = ""
@@ -71,7 +72,10 @@ def Main():
         serverKey = pingData.get("key")
         serverLocalID = hashlib.md5(f"{serverKey}{config['server']['host']}".encode('utf-8')).hexdigest()
 
-        # serverStorage = createStorage(f"server-{serverLocalID}", json.dumps({}))
+        serverStorage = File(serverLocalID, client_data_servers_path)
+
+        serverStorage.addData("token", "test")
+        serverStorage.saveData()
 
         process.started_callback("client-main")
 
