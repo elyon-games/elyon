@@ -60,7 +60,7 @@ def start_all_processes() -> None:
         process[id].start()
 
 def stop_all_processes() -> None:
-    print("Stopping all processes")
+    print("stopping all processes")
     for id in process:
         process[id].stop()
 
