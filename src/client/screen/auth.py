@@ -1,10 +1,12 @@
 import pygame
 from pygame import gfxdraw
 from client.style.gradient import draw_gradient
-from client.style.constants import EMERAUDE, BLEU, WHITE, BLACK, GRAY
+from client.style.constants import EMERAUDE, BLEU, WHITE, BLACK, GRAY, STEEL_BLUE, LIGHTER_BLUE, CARD_COLOR, CARD_BORDER_COLOR
+from client.style.fonts import getFontSize
 from client.lib.screen.base import Screen
 from client.types import EVENTS, KEYS
 import common.config as config 
+from client.lib.auth import login
 
 class AuthScreen(Screen):
     def __init__(self):
@@ -12,11 +14,11 @@ class AuthScreen(Screen):
         self.username = ""
         self.password = ""
         self.active_input = None
-        self.font = pygame.font.Font(None, 32)
-        self.button_color = (70, 130, 180)  # Steel blue
-        self.button_hover_color = (100, 149, 237)  # Lighter blue
-        self.card_color = (40, 40, 40)  # Dark gray for the card
-        self.card_border_color = (100, 100, 100)
+        self.font = getFontSize(32)
+        self.button_color = STEEL_BLUE
+        self.button_hover_color = LIGHTER_BLUE
+        self.card_color = CARD_COLOR
+        self.card_border_color = CARD_BORDER_COLOR
 
     def draw_rounded_rect(self, surface, rect, color, border_radius=20, border_color=None, border_width=0):
         """Dessine un rectangle avec des coins arrondis."""
@@ -72,7 +74,6 @@ class AuthScreen(Screen):
         button_hover = button_rect.collidepoint(mouse_pos)
         self.render_button(button_rect, "Login", button_hover)
 
-        # Handle events
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if username_rect.collidepoint(event.pos):
@@ -80,7 +81,7 @@ class AuthScreen(Screen):
                 elif password_rect.collidepoint(event.pos):
                     self.active_input = "password"
                 elif button_rect.collidepoint(event.pos):
-                    print(f"Username: {self.username}, Password: {self.password}")  # Process login here
+                    res = login(self.username, self.password)
                     self.active_input = None
                 else:
                     self.active_input = None

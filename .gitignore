@@ -4,4 +4,4 @@ build/
 dist/
 data/
 test.py
-test/
+test/**/*

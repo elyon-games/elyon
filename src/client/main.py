@@ -1,3 +1,4 @@
+import time
 import traceback
 import json
 import os
@@ -23,6 +24,7 @@ from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
 from client.lib.keys.controler import updateKeys
 from client.lib.storage.file import File
+from client.lib.auth import verify as auth_verify
 import hashlib
 
 def stopAllProcesses():
@@ -56,7 +58,6 @@ def Main():
         computer_id: str = ""
         if "computer_id" not in commonStorage.getData():
             computer_id = generate_random_uuid()
-            print(f"Computer ID : {computer_id}")
             commonStorage.addData("computer_id", computer_id)
             commonStorage.saveData()
         else:
@@ -78,14 +79,10 @@ def Main():
 
         serverStorage = File(serverLocalID, client_data_servers_path)
 
-        serverStorage.addData("token", "test")
-        serverStorage.saveData()
-
         process.started_callback("client-main")
 
-        import client.lib.keys.controler as controler
-
         running = True
+        init = False
         while running:
             events = pygame.event.get()
             for event in events:
@@ -98,6 +95,15 @@ def Main():
 
             updateKeys()
             updateScreen(window=window, events=events, keys=pygame.key.get_pressed())
+            if not init:
+                init = True
+                print("Init Screen")
+                showScreen(window, "loading")
+                # ajouter le loading des assets etc...
+                time.sleep(3)
+                token = serverStorage.getKey("token")
+                if token:
+                    print(auth_verify(token))
 
             fps = int(clock.get_fps())
             current_ms_per_frame = clock.get_time()

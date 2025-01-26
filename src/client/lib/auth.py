@@ -1,10 +1,18 @@
 import requests
-from common.config import getConfig
-print(getConfig("client"))
+from client.lib.url import with_url_api
+
+authData = {}
 
 def login(username, password):
-    response = requests.post('http://localhost:5000/login', json={
+    response = requests.post(with_url_api("/auth/login"), json={
         'username': username,
         'password': password
     })
-    return response.json()
+    print(response.json())
+    return
+
+def register(username, password):
+    pass
+
+def verify(token):
+    pass

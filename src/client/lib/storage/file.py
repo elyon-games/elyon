@@ -7,15 +7,13 @@ class File:
     def __init__(self, id, path: str = None, default: dict = {}):
         self.id = id
         self.data = {}
-        if path:
-            self.Init(path, default)
-    
-    def Init(self, path: str, default: dict) -> None:
         self.path = utils.joinPath(path, f"{self.id}.json")
-        if not self.existsData():
+        if self.existsData():
+            self.loadData()
+        else:
             self.data = default
             self.saveData()
-
+    
     def setData(self, data: dict) -> None:
         self.data = data
 
@@ -25,8 +23,11 @@ class File:
     def updateData(self, key: str, value) -> None:
         self.data[key] = value
 
+    def getKey(self, key: str):
+        return self.data.get(key, None)
+
     def getData(self) -> dict:
-        return self.data
+        return self.data.copy()
 
     def existsData(self) -> bool:
         return os.path.exists(self.path)

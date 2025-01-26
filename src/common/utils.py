@@ -24,7 +24,8 @@ def getMode() -> str:
     return "prod"
 
 def joinPath(path: str, *paths: str) -> str:
-    return os.path.join(path, *paths)
+    full_path = os.path.join(path, *paths)
+    return os.path.abspath(full_path)
 
 def is_valid_ip(ip: str) -> bool:
     if not getDevModeStatus() and ip.endswith("elyon.younity-mc.fr"):
