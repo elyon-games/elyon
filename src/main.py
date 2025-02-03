@@ -1,6 +1,7 @@
 import sys
 import requests
 import traceback
+import common.sentry as sentry
 import common.process as process
 import common.config as config
 import common.utils as utils
@@ -39,24 +40,29 @@ options: Dict[str, Any] = {}
 saved_servers_path: str = ""
 
 def start_server() -> None:
+    server_port = args.getArg("server-port") if args.asArg("server-port") else config.getConfig("server")["port"]
+    server_host = args.getArg("server-host") if args.asArg("server-host") else config.getConfig("server")["host"]
     if args.asArg("clear-data") and args.getArg("clear-data") in ["server", "all"]:
         data.clearServerData()
     data.createServerData()
     config.setConfigParameter("server", "launch.type", type)
+    config.setConfigParameter("server", "host", server_host)
+    config.setConfigParameter("server", "port", server_port)
     import server.main as Server
     process.create_process("server-main", Server.Main).start()
 
 def start_client() -> None:
     global online, server_host
+    server_host = args.getArg("server-host") if args.asArg("server-host") else server_host
     if args.asArg("clear-data") and args.getArg("clear-data") in ["client", "all"]:
         data.clearClientData()
     data.createClientData()
-    import client.main as Client
     config.setConfigParameter("client", "launch.type", type)
     config.setConfigParameter("client", "online", online)
     print(f"Adresse du serveur : {server_host}")
     if server_host:
         config.setConfigParameter("client", "server.host", server_host)
+    import client.main as Client
     process.create_process("client-main", Client.Main).start()
 
 def start_local() -> None:
@@ -82,6 +88,7 @@ def save_server(ip: str) -> None:
 
 def ping_server(ip: str) -> bool:
     try:
+        print(f"Ping Server Adress : {ip}")
         res = requests.get(f"http://{ip}/api/client/info")
         return res.status_code == 200
     except requests.exceptions.RequestException:
@@ -410,6 +417,8 @@ def Main() -> None:
         configMode = args.getArg("config") if args.asArg("config") else utils.getMode()
         type = args.getArg("type") if args.asArg("type") else "gui"
 
+        sentry.InitSentry()
+
         path.initPath(options.get("data-path") if options.get("data-path") else "./data")
         data.createDataFolder()
 
@@ -429,8 +438,6 @@ def Main() -> None:
         print(f"Mode : {mode}")
         print(f"Type : {type}")
         print(f"Config : {configMode}")
-
-        server_host = args.getArg("server-host") if args.asArg("server-host") else server_host
 
         if type == "gui":
             start_GUI()

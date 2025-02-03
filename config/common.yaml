@@ -1,2 +1,4 @@
 version: 1.1.0
 ultraDebug: false
+sentry:
+  dsn: "https://99aefb6971991a747cee9caf6a5fdeaf@o4508610774958080.ingest.de.sentry.io/4508610805629008"

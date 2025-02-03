@@ -1,12 +1,19 @@
 import pygame
-from client.types import EVENTS, KEYS, EVENT
+from client.types import EVENTS, KEYS, EVENT, WINDOW
+from client.lib.events.controller import getEvents
+from client.lib.keys.controler import getKeys
+from client.lib.title import changeTitle
 class Screen():
-    def __init__(self, id):
+    def __init__(self, window: WINDOW, id: str, title: str = None):
         self.id = id
-        self.window = None
+        self.title = title
+        self.window: WINDOW = window
+        self.keys: KEYS = None
+        self.events: EVENTS = None
         self.surface = None
-        self.isMounted = False
-
+        self.updateSurface(self.getSize())
+        self.isMounted = True
+    
     def updateSurface(self, size):
         self.surface = pygame.Surface(size, pygame.RESIZABLE)
 
@@ -15,19 +22,20 @@ class Screen():
             return (0, 0)
         return self.window.get_size()
 
-    def Mount(self, window: pygame.Surface):
-        self.window = window
-        self.updateSurface(self.getSize())
-        self.isMounted = True
-
     def UnMount(self):
         self.surface = None
         self.isMounted = False
 
-    def Update(self, window: pygame.Surface, events: EVENTS, keys: KEYS):
+    def Update(self, window):
         if self.isMounted:
+            changeTitle(self.title)
             self.window = window
+            self.events = getEvents()
+            self.keys = getKeys()
             self.window.blit(self.surface, (0, 0), self.surface.get_rect())
+
+    def UpdateView(self):
+        pass
 
     def HandleEvent(self, type: int, event: EVENT):
         pass

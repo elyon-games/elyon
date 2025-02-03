@@ -3,7 +3,7 @@ all:
   port: 3300
   jwt:
     expiresIn: 3600
-
+    
 dev:
   debug: false
   web: 

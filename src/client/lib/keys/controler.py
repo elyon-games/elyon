@@ -1,4 +1,11 @@
 import pygame
 
-def updateKeys():
-    keys = pygame.key.get_pressed()
+keys = None
+
+def getKeys():
+    global keys
+    return keys
+
+def updateKeys(keysSet):
+    global keys
+    keys = keysSet
