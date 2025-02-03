@@ -29,6 +29,9 @@ from client.lib.auth import verify as auth_verify
 from client.var import auth as authData
 import hashlib
 
+import tkinter as tk
+from tkinter import messagebox
+
 def stopAllProcesses():
     config = getConfig("client")
     pygame.quit()
@@ -158,9 +161,6 @@ def Main():
         stopAllProcesses()
 
     except Exception as exc:
-        import tkinter as tk
-        from tkinter import messagebox
-
         #ajouter un except pour si il n'arrive pas a se connecter au serveur
 
         def show_error_message(message, detail):

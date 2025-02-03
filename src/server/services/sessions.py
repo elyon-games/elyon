@@ -1,6 +1,5 @@
 from flask_session import Session as FlaskSession
 import common.path as path
-from server.services.database.db import activitySession
 from common.config import getConfig
 
 def initSessions(app):

@@ -5,65 +5,6 @@ from common.config import getConfig
 
 config = getConfig("server")
 
-class Files(BaseModel):
-    def __init__(self):
-        super().__init__({
-            "id": {"type": int, "required": True, "unique": True},
-            "name": {"type": str, "required": True},
-            "path": {"type": str, "required": True},
-            "type": {"type": str, "required": True},
-            "size": {"type": str, "required": True},
-            "created_at": {"type": str, "required": True},
-            "updated_at": {"type": str, "required": True}
-        }, default_data=[])
-
-    def upload(self, name, path, type, size):
-        file = {
-            "id": self.get_new_id(),
-            "name": name,
-            "path": path,
-            "type": type,
-            "size": size,
-            "created_at": get_current_time(),
-            "updated_at": get_current_time()
-        }
-        self.insert(file)
-        self.save()
-        return file
-
-    def get_by_id(self, file_id):
-        return next((file for file in self.data if file["id"] == file_id), None)
-
-class ActivitySessions(BaseModel):
-    def __init__(self):
-        super().__init__({
-            "id": {"type": int, "required": True, "unique": True},
-            "user_id": {"type": int, "required": True},
-            "created_at": {"type": str, "required": True}
-        }, default_data=[])
-
-    def create(self, user_id):
-        session = {
-            "id": self.get_new_id(),
-            "user_id": user_id,
-            "created_at": get_current_time()
-        }
-        self.insert(session)
-        self.save()
-        return session
-    
-    def get_all(self):
-        return self.data
-    
-    def get_by_id(self, session_id):
-        return next((session for session in self.data if session["id"] == session_id), None)
-    
-    def get_by_user_id(self, user_id):
-        return next((session for session in self.data if session["user_id"] == user_id), None)
-    
-    def get_new_id(self):
-        return len(self.data) + 1
-
 class Badges(BaseModel):
     def __init__(self):
         super().__init__({

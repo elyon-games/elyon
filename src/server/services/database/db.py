@@ -1,9 +1,7 @@
-from server.services.database.models import Users, Badges, ActivitySessions, Files
+from server.services.database.models import Users, Badges
 
 users = Users()
 badges = Badges()
-activitySession = ActivitySessions()
-files = Files()
 
 def get_user_badges(user_id):
     user = users.get_by_id(user_id)
