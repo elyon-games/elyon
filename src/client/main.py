@@ -22,6 +22,7 @@ from client.style.constants import WHITE
 from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
 from client.lib.keys.controler import updateKeys
+from client.lib.notifications.controller import updateNotifications
 from client.lib.events.controller import updateEvents
 from client.lib.storage.controller import createStorage
 from client.lib.storage.base import File
@@ -91,7 +92,7 @@ def Main():
         def initLoading():
             print("Init Screen")
             showScreen("loading")
-            time.sleep(1)
+            time.sleep(0.5)
             # ajouter le loading des assets etc...
             token = serverStorage.getKey("token")
             if token:
@@ -126,6 +127,7 @@ def Main():
             updateKeys(keys)
             updateEvents(events)
             updateScreen(window, events)
+            updateNotifications(window)
             if not init:
                 init = True
                 process.create_process("client-init-loading", initLoading).start()
@@ -146,15 +148,18 @@ def Main():
             current_ms_per_frame = clock.get_time()
             if abs(current_ms_per_frame - ms_per_frame) >= 5:
                 ms_per_frame = current_ms_per_frame
-            computer_id_text = getFont("hud_info").render(f"CLIENT : {computer_id.split('-')[0]}", True, WHITE)
-            fps_text = getFont("hud_info").render(f"FPS : {fps}", True, WHITE)
-            ms_text = getFont("hud_info").render(f"MSPF : {ms_per_frame}", True, WHITE)
 
-            if debugView :
-                window.blit(computer_id_text, (window.get_width() - computer_id_text.get_width() - 10, 10))
-                window.blit(fps_text, (window.get_width() - fps_text.get_width() - 10, 25))
-                window.blit(ms_text, (window.get_width() - ms_text.get_width() - 10, 40))
-
+            if debugView:
+                computer_id_text = getFont("hud_info").render(f"CLIENT : {'-'.join(computer_id.split('-')[:2])}", True, WHITE)
+                fps_text = getFont("hud_info").render(f"FPS : {fps}", True, WHITE)
+                ms_text = getFont("hud_info").render(f"MSPF : {ms_per_frame}", True, WHITE)
+                pygame_version = getFont("hud_info").render(f"Pygame : {pygame.version.ver}", True, WHITE)
+    
+                window.blit(computer_id_text, (10, 10))
+                window.blit(fps_text, (10, 25))
+                window.blit(ms_text, (10, 40))
+                window.blit(pygame_version, (10, 55))
+                
             pygame.display.flip()
             clock.tick(100)
 

@@ -6,4 +6,4 @@ Alors :
 - Un profile (que l'on puisse custom avec afficher sont pseudo une bio si on le souhaite, avatar, bages, cosmetic, classement dans les jeux au quelle y a déjà jouer)
 - boutique
 - badges
-- 
+- Notifications
