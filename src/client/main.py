@@ -14,10 +14,10 @@ pygame.init()
 pygame.font.init()
 pygame.mixer.init()
 
+import common.path as path
+import common.errors as errors
 from client.lib.title import changeTitle
 from client.lib.ping import ping
-import common.path as path
-import common.assets as assets
 from client.style.constants import WHITE
 from client.style.fonts import getFont
 from client.lib.screen.controller import showScreen, updateScreen
@@ -25,7 +25,7 @@ from client.lib.keys.controler import updateKeys
 from client.lib.notifications.controller import updateNotifications
 from client.lib.events.controller import updateEvents
 from client.lib.storage.controller import createStorage
-from client.lib.storage.base import File
+from client.lib.assets import loadAsset
 from client.lib.auth import verify as auth_verify
 from client.var import auth as authData
 import hashlib
@@ -40,27 +40,21 @@ def stopAllProcesses():
         for proces in process.get_all_processes().values():
             proces.stop()
 
-def InitPygame():
-    global window
-    icon = pygame.image.load(assets.getAsset("/logo/round.ico"))
-    pygame.display.set_icon(icon)
-    changeTitle("Chargment...")
-    window_width, window_height = 800, 600
-    window = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
-    clock = pygame.time.Clock()
-    return window, clock
-
 def Main():
     try:
         config = getConfig("client")
         options = getArgs()
         global window, clock, ms_per_frame, authData
         ms_per_frame = 10
-        window, clock = InitPygame()
+        pygame.display.set_icon(loadAsset("app-icon", "/logo/round.ico"))
+        changeTitle("Chargment...")
+        window_width, window_height = 800, 600
+        window = pygame.display.set_mode((window_width, window_height), pygame.RESIZABLE)
+        clock = pygame.time.Clock()
         client_data_path = path.get_path("client_data")
         client_data_servers_path = path.get_path("client_data_servers")
 
-        commonStorage = createStorage("common", client_data_path)
+        commonStorage = createStorage("common", client_data_path, {"time": time.time()})
         computer_id: str = ""
         if "computer_id" not in commonStorage.getData():
             computer_id = generate_random_uuid()
@@ -75,17 +69,17 @@ def Main():
 
         pingData = ping()
         if pingData.get("version") != config["version"]:
-            raise ValueError("La version du serveur ne correspond pas à celle du client.")
+            raise ValueError(errors.getErrorMessage("CLIENT_VERSION_MISMATCH"))
         
         if pingData.get("key") is None:
-            raise ValueError("Le serveur n'a pas renvoyé de clé.")
+            raise ValueError(errors.getErrorMessage("SERVER_MISSING_KEY"))
 
         serverKey = pingData.get("key")
         serverLocalID = hashlib.md5(f"{serverKey}{config['server']['host']}".encode('utf-8')).hexdigest()
 
         setConfigParameter("server", "server.id", serverLocalID)
 
-        serverStorage = createStorage(serverLocalID, client_data_servers_path)
+        serverStorage = createStorage(serverLocalID, client_data_servers_path, {"time": time.time()})
 
         process.started_callback("client-main")
 
@@ -93,7 +87,7 @@ def Main():
             print("Init Screen")
             showScreen("loading")
             time.sleep(0.5)
-            # ajouter le loading des assets etc...
+            loadAsset("logo", "/logo/round.png")
             token = serverStorage.getKey("token")
             if token:
                 verifyData = auth_verify(token)

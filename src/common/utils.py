@@ -4,15 +4,14 @@ import re
 import json
 
 def create_file_if_not_exists(pathR: str, default: str = json.dumps({})) -> None:
-    folder = os.path.dirname(pathR)
-    if not os.path.exists(folder):
-        os.makedirs(folder)
+    create_folder_if_not_exists(os.path.dirname(pathR))
     if not os.path.exists(pathR):
-        with open(pathR, 'w') as file:
-            file.write(default)
+        print(f"Creating file {pathR}")
+        open(pathR, 'w').write(default)
 
 def create_folder_if_not_exists(folder: str) -> None:
     if not os.path.exists(folder):
+        print(f"Creating folder {folder}")
         os.makedirs(folder)
 
 def getDevModeStatus() -> bool:

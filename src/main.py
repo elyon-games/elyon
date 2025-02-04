@@ -8,7 +8,7 @@ import common.utils as utils
 import common.args as args
 import common.path as path
 import common.data as data
-import common.assets as assets
+import common.ams as AssetsManagerSystem
 from common.logger import setup_logger
 import logging
 import customtkinter as ctk
@@ -382,7 +382,7 @@ def start_GUI() -> None:
     app = ctk.CTk()
     app.title("Elyon Games Launcher")
     app.geometry("600x500")
-    app.iconbitmap(assets.getAsset("/logo/round.ico"))
+    app.iconbitmap(AssetsManagerSystem.getAsset("/logo/round.ico"))
     app.protocol("WM_DELETE_WINDOW", on_close)
     app.resizable(False, False)
     ctk.set_appearance_mode("dark")

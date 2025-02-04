@@ -7,5 +7,4 @@ def getAsset(relative_path: str) -> str:
     return os.path.join(base_path, cleaned_path)
 
 def getAssetContent(relative_path: str) -> str:
-    with open(getAsset(relative_path), "r") as file:
-        return file.read()
+    return open(getAsset(relative_path), "r").read()

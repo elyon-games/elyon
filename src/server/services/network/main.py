@@ -2,8 +2,6 @@ from server.services.network.packets import Packet, packets
 from server.services.network.gateways import Gateway, gateways
 from server.services.network.fonctions import Fonction, fonctions
 
-
-
 def register_fonction(id, fonction) -> None:
     fonctions.append({
         "id": id,
@@ -18,4 +16,3 @@ def create_gateway(userID) -> Gateway:
         }
     gateways[userID] = Gateway(userID)
     return gateways[userID]
-    

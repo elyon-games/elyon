@@ -5,9 +5,11 @@ from client.var import auth as authData
 from client.style.constants import EMERAUDE, BLACK
 import client.lib.notifications.controller as notifications
 from client.style.gradient import draw_gradient
+from client.lib.assets import getAsset
 class HomeScreen(Screen):
     def __init__(self, window):
         super().__init__(window, "home", "Accueil")
+        self.logo = getAsset("logo")
     
     def UpdateView(self):
         draw_gradient(self.surface, EMERAUDE, BLACK, *self.getSize())
@@ -17,6 +19,7 @@ class HomeScreen(Screen):
         text = font.render('Test Button', True, (255, 255, 255))
         text_rect = text.get_rect(center=self.test_button.center)
         self.window.blit(text, text_rect)
+        self.window.blit(self.logo, (0, 0))
 
     def HandleEvent(self, type, event):
         if event.type == pygame.MOUSEBUTTONDOWN:

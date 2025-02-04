@@ -3,7 +3,7 @@ from common.config import getConfig
 from client.var import auth as authData
 import requests
 
-host = getConfig("client")["server"]["host"]
+host: str = getConfig("client")["server"]["host"]
 
 def is_https_supported(host: str) -> bool:
     try:
@@ -25,3 +25,6 @@ def with_url_api(url: str) -> str:
 def getHeadersWithToken(headers={}, token:str=""):
     headers["Authorization"] = f"Bearer {authData['token'] if not token else token}"
     return headers
+
+def isOfficielServer():
+    return host.split(":")[0].endswith("elyon.younity-mc.fr")

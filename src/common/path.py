@@ -1,6 +1,6 @@
 from typing import Dict
 
-import common.assets
+import common.ams
 from common.utils import joinPath
 
 global path_data
@@ -22,7 +22,7 @@ def initPath(path_data_t: str = "./data") -> None:
         "data": path_data,
         # interne
         "config": "./config",
-        "assets": common.assets.getAsset("./assets"),
+        "assets": common.ams.getAsset("./assets"),
         # logs
         "logs": joinPath(path_data, "logs"),
         # client
