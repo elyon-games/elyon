@@ -6,13 +6,7 @@ set "assets_path=%current_dir%assets"
 set "config_path=%current_dir%config"
 set "pulic_server=%current_dir%src/server/public"
 
-
-if exist __main__.spec del __main__.spec
-if exist dist\__main__.exe del dist\__main__.exe
-if exist build rmdir /S /Q build
-
-set "pyinstaller_path=%appdata%\Python\Python312\Scripts\pyinstaller.exe"
-
-"%pyinstaller_path%" --add-data "%config_path%:config" --add-data "%pulic_server%:server_public_files" --add-data "%assets_path%:assets" --onefile "%src_path%" --icon="%assets_path%\logo\round.ico"
+call "%current_dir%venv/Scripts/activate.bat"
+pyinstaller --add-data "%config_path%:config" --add-data "%pulic_server%:server_public_files" --add-data "%assets_path%:assets" --onefile "%src_path%" --icon="%assets_path%\logo\round.ico"
 
 pause
