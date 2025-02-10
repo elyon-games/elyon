@@ -11,7 +11,6 @@ import common.data as data
 import common.ams as AssetsManagerSystem
 from common.logger import setup_logger
 import logging
-import customtkinter as ctk
 import webbrowser
 import json
 from typing import List, Any, Dict, Optional
@@ -95,6 +94,7 @@ def ping_server(ip: str) -> bool:
         return False
 
 def start_GUI() -> None:
+    import customtkinter as ctk
 
     def delete_server(server_to_delete: str) -> None:
         content: List[str] = load_saved_servers()
