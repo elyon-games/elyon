@@ -16,6 +16,9 @@ def get_screen_class(screen_name: str) -> Type[Screen]:
     elif screen_name == "auth-login":
         from client.screen.auth.login import AuthLoginScreen
         return AuthLoginScreen
+    elif screen_name == "super_smash":
+        from client.screen.super_smash import SuperSmashMenu
+        return SuperSmashMenu
     else:
         raise Exception(f"Screen {screen_name} not found.")
 

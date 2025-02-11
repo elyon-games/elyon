@@ -87,10 +87,11 @@ class AuthLoginScreen(Screen):
                     self.active_input = "password"
                 elif button_rect.collidepoint(event.pos):
                     self.active_input = None
-                    if login(self.email, self.password) == True:
-                        showScreen("home")
-                    else:
-                        self.password = ""
+                    # if login(self.email, self.password) == True:
+                    # a reremplacer par "home"
+                    showScreen("super_smash")
+                    # else:
+                    #     self.password = ""
                 else:
                     self.active_input = None
             elif event.type == pygame.KEYDOWN and self.active_input:
