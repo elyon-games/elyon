@@ -87,10 +87,17 @@ def save_server(ip: str) -> None:
 
 def ping_server(ip: str) -> bool:
     try:
-        print(f"Ping Server Adress : {ip}")
+        print(f"Ping Server Address: {ip}")
         res = requests.get(f"http://{ip}/api/client/info")
         return res.status_code == 200
-    except requests.exceptions.RequestException:
+    except requests.exceptions.Timeout:
+        print("Error: Request timed out")
+        return False
+    except requests.exceptions.ConnectionError:
+        print("Error: Connection error")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"Error: An unexpected error occurred: {e}")
         return False
 
 def start_GUI() -> None:
